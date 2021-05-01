@@ -10,7 +10,6 @@ trait DockerExtension {
   implicit def dockerContainerDefinitionToIDockerService(dcDef: DcDef): IDockerService = {
     new IDockerService {
       override def instance(): DockerService = DockerService(Seq(dcDef))
-
       override def sbtSettings(): Set[Def.Setting[_]] = Set()
     }
   }
