@@ -29,6 +29,6 @@ trait ProjectSettings {
     }
   }
 
-  val SbtModule = model.SbtModule
+  //val SbtModule = model.SbtModule
   type SbtModule = model.SbtModule
 }
