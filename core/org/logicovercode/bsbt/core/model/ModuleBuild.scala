@@ -14,36 +14,27 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]]) ex
     ModuleBuild(this.allSettings ++ _settings)
   }
 
-  @Deprecated
-  override def moduleSourceDirectories(
-      projectSourceDirectories: String*
-  ): ModuleBuild = sourceDirectories(projectSourceDirectories: _*)
-
   def sourceDirectories(projectSourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedSourceDirectories in Compile ++= projectSourceDirectories.map { src =>
-        (baseDirectory in Compile).value / src
+       Compile / unmanagedSourceDirectories ++= projectSourceDirectories.map { src =>
+        (Compile / baseDirectory).value / src
       }
     )
     ModuleBuild(this.allSettings ++ _settings)
   }
 
-  @Deprecated
-  override def moduleResourceDirectories(
-      projectResourceDirectories: String*
-  ): ModuleBuild = resourceDirectories(projectResourceDirectories: _*)
   def resourceDirectories(projectResourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedResourceDirectories in Compile ++= projectResourceDirectories
-        .map { res => (baseDirectory in Compile).value / res }
+        Compile / unmanagedResourceDirectories ++= projectResourceDirectories
+        .map { res => (Compile / baseDirectory).value / res }
     )
     ModuleBuild(this.allSettings ++ _settings)
   }
 
   def testSourceDirectories(testSourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedSourceDirectories in Test ++= testSourceDirectories.map { src =>
-        (baseDirectory in Test).value / src
+      Test / unmanagedSourceDirectories ++= testSourceDirectories.map { src =>
+        (Test / baseDirectory).value / src
       }
     )
     ModuleBuild(this.allSettings ++ _settings)
@@ -51,8 +42,8 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]]) ex
 
   def testResourceDirectories(testResourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedResourceDirectories in Test ++= testResourceDirectories.map { res =>
-        (baseDirectory in Test).value / res
+      Test / unmanagedResourceDirectories ++= testResourceDirectories.map { res =>
+        (Test / baseDirectory).value / res
       }
     )
     ModuleBuild(this.allSettings ++ _settings)
@@ -64,11 +55,6 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]]) ex
       sbtPluginsSet.map(mID => addSbtPlugin(mID))
     ModuleBuild(this.allSettings ++ moduleIdSettings)
   }
-
-  @Deprecated
-  override def moduleDependencies(
-      projectDependencies: Seq[JvmModuleID]*
-  ): ModuleBuild = dependencies(projectDependencies: _*)
 
   def dependencies(projectDependencies: Seq[JvmModuleID]*): ModuleBuild = {
     val jvmModuleIdSet = projectDependencies.flatten.toSet
@@ -100,7 +86,7 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]]) ex
       dependentDockerServices := dockerInstancesSet
     )
 
-    val containerSettings = dockerServices.map(_.sbtSettings()).flatten
+    val containerSettings = dockerServices.flatMap(_.sbtSettings())
 
     val allSettings = this.settings ++ settings ++ containerSettings
 
@@ -111,7 +97,7 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]]) ex
       dependencies: Set[JvmModuleID]
   ): Set[Def.Setting[_]] = {
     val dependencyResolvers =
-      dependencies.map(dep => dep.resolverForThisModuleId).flatten
+      dependencies.flatMap(dep => dep.resolverForThisModuleId)
     Set(resolvers ++= dependencyResolvers.toSeq)
   }
 
@@ -142,8 +128,7 @@ object ModuleBuild {
       mavenVersion: String
   ): ModuleBuild = {
     //user shouldn't be forced to set this variable
-    val sbtOfflineMode =
-      sys.env.get("SBT_OFFLINE_MODE").getOrElse("false").toBoolean
+    val sbtOfflineMode = sys.env.getOrElse("SBT_OFFLINE_MODE", "false").toBoolean
 
     val defaultSettings: Set[Def.Setting[_]] = Set(
       name := projectArtifact,
