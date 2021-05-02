@@ -16,7 +16,8 @@ trait BuildApply[T <: BuildSettings[T]] extends BuildFactory[T] {
       name := projectArtifact,
       version := mavenVersion,
       organization := projectOrganization,
-      offline := sbtOfflineMode
+      offline := sbtOfflineMode,
+      publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
     )
 
     moduleWithNewSettings(defaultSettings)

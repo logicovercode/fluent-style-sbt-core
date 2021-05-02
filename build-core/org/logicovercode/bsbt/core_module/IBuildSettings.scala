@@ -6,8 +6,6 @@ import sbt.{Def, ModuleID}
 
 trait IBuildSettings[T <: BuildSettings[T]] {
 
-  def sbtOffLineMode(sbtOffLineMode: Boolean): T
-
   def sourceDirectories(projectSourceDirectories: String*): T
 
   def resourceDirectories(projectResourceDirectories: String*): T

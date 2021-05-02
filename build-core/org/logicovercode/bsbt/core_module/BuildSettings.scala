@@ -10,21 +10,14 @@ import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
 
 import java.net.URL
 
-abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.Setting[_]])
-  extends IBuildSettings[T]
+abstract class BuildSettings[T <: BuildSettings[T]](val sbtSettings: Set[Def.Setting[_]])
+    extends IBuildSettings[T]
     with BuildFactory[T]
     with DockerSettings {
 
-  def sbtOffLineMode(sbtOffLineMode: Boolean): T = {
-    val _settings = Set(
-      offline := sbtOffLineMode
-    )
-    moduleWithNewSettings(this.sbtSettings ++ _settings)
-  }
-
   def sourceDirectories(projectSourceDirectories: String*): T = {
     val _settings = Set(
-       Compile / unmanagedSourceDirectories ++= projectSourceDirectories.map { src =>
+      Compile / unmanagedSourceDirectories ++= projectSourceDirectories.map { src =>
         (Compile / baseDirectory).value / src
       }
     )
@@ -33,7 +26,7 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
 
   def resourceDirectories(projectResourceDirectories: String*): T = {
     val _settings = Set(
-        Compile / unmanagedResourceDirectories ++= projectResourceDirectories
+      Compile / unmanagedResourceDirectories ++= projectResourceDirectories
         .map { res => (Compile / baseDirectory).value / res }
     )
     moduleWithNewSettings(this.sbtSettings ++ _settings)
@@ -69,7 +62,7 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
     moduleWithNewSettings(
       this.sbtSettings ++ moduleIdSettings(
         jvmModuleIdSet.map(_.moduleID)
-      ) ++ resolverSettingsSet(jvmModuleIdSet) ++ sbtSettings
+      ) ++ resolverSettingsSet(jvmModuleIdSet)
     )
   }
 
@@ -90,24 +83,24 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
   def dockerServices(dockerServices: IDockerService*): T = {
     //this will remove duplicates
     val dockerInstancesSet = (dockerServices map (_.instance())).toSet
-    val settings: Seq[Def.Setting[_]] = Seq(
+    val dockerServiceSettings: Seq[Def.Setting[_]] = Seq(
       dependentDockerServices := dockerInstancesSet
     )
 
     val containerSettings = dockerServices.flatMap(_.sbtSettings())
 
-    val allSettings = this.settings ++ settings ++ containerSettings
+    val allSettings = this.sbtSettings ++ dockerServiceSettings ++ containerSettings
 
-    moduleWithNewSettings(allSettings.toSet)
+    moduleWithNewSettings(allSettings)
   }
 
   def argsRequiredForPublishing(
-                                 projectDevelopers: List[Developer],
-                                 license: License,
-                                 homePageUrl: URL,
-                                 moduleScmInfo: ScmInfo,
-                                 mavenRepository: MavenRepository
-                               ): T = {
+      projectDevelopers: List[Developer],
+      license: License,
+      homePageUrl: URL,
+      moduleScmInfo: ScmInfo,
+      mavenRepository: MavenRepository
+  ): T = {
 
     println("adding publishing settings")
     val _settings = Set(
@@ -138,9 +131,6 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
   }
 
   def settings: Seq[Def.Setting[_]] = {
-    this.sbtSettings.toSeq ++ Set(
-      publishLocalConfiguration := publishLocalConfiguration.value
-        .withOverwrite(true)
-    )
+    this.sbtSettings.toSeq
   }
 }
