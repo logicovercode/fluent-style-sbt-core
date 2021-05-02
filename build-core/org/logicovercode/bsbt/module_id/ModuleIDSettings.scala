@@ -1,13 +1,14 @@
-package org.logicovercode.bsbt.core_module
+package org.logicovercode.bsbt.module_id
 
-import org.logicovercode.bsbt.core_module.model.JvmModuleID
-import sbt.librarymanagement.{Configuration, MavenRepository, ModuleID}
+import sbt.librarymanagement.{MavenRepository, ModuleID}
 
 trait ModuleIDSettings {
 
+
+
   implicit def moduleIdToSeqJvmModuleID(moduleID: ModuleID): Seq[JvmModuleID] = Seq(JvmModuleID(moduleID))
 
-  implicit def seqOfModuleIdToSeqJvmModuleID(moduleIDSeq: Seq[ModuleID]): Seq[JvmModuleID] = moduleIDSeq.map( JvmModuleID(_) )
+  implicit def seqOfModuleIdToSeqJvmModuleID(moduleIDSeq: Seq[ModuleID]): Seq[JvmModuleID] = moduleIDSeq.map(JvmModuleID(_))
 
   implicit def jvmModuleIdToSeqJvmModuleID(jvmModuleID: JvmModuleID): Seq[JvmModuleID] = Seq(jvmModuleID)
 

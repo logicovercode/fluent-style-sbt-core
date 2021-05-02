@@ -1,10 +1,10 @@
 package org.logicovercode.bsbt
 
-import org.logicovercode.bsbt.core_module.{ModuleIDSettings, ProjectSettings}
+import org.logicovercode.bsbt.all_modules.ProjectSettings
 import org.logicovercode.bsbt.docker.{DockerExtension, DockerSettings}
+import org.logicovercode.bsbt.module_id.ModuleIDSettings
 import org.logicovercode.bsbt.paths.PluginPaths
 import org.logicovercode.bsbt.publishing.PublishingSettings
-import org.logicovercode.bsbt.core_module.ModuleIDSettings
 import org.logicovercode.bsbt.scalafmt.ScalaFmtSettings
 import sbt.AutoPlugin
 

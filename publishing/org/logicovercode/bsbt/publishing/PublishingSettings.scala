@@ -1,7 +1,7 @@
 package org.logicovercode.bsbt.publishing
 
 import org.apache.ivy.core.module.descriptor.License
-import org.logicovercode.bsbt.core_module.model.BuildSettings
+import org.logicovercode.bsbt.core_module.BuildSettings
 import sbt.Keys.{publishTo, _}
 import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
 

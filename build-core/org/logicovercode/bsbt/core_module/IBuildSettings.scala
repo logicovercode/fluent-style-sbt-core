@@ -1,6 +1,7 @@
-package org.logicovercode.bsbt.core_module.model
+package org.logicovercode.bsbt.core_module
 
 import org.logicovercode.bsbt.docker.model.IDockerService
+import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.{Def, ModuleID}
 
 trait IBuildSettings[T <: BuildSettings[T]] {

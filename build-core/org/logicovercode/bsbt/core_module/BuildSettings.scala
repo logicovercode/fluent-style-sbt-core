@@ -1,11 +1,15 @@
-package org.logicovercode.bsbt.core_module.model
+package org.logicovercode.bsbt.core_module
 
 import org.logicovercode.bsbt.docker.DockerSettings
 import org.logicovercode.bsbt.docker.model.IDockerService
+import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.Keys._
 import sbt._
 
-abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.Setting[_]]) extends IBuildSettings[T] with DockerSettings {
+abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.Setting[_]])
+  extends IBuildSettings[T]
+    with BuildFactory[T]
+    with DockerSettings {
 
   def sbtOffLineMode(sbtOffLineMode: Boolean): T = {
     val _settings = Set(
@@ -13,8 +17,6 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
     )
     moduleWithNewSettings(this.sbtSettings ++ _settings)
   }
-
-  def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]) : T
 
   def sourceDirectories(projectSourceDirectories: String*): T = {
     val _settings = Set(
@@ -116,23 +118,3 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
     )
   }
 }
-
-//object ModuleBuild {
-//
-//  def apply(
-//      projectOrganization: String,
-//      projectArtifact: String,
-//      mavenVersion: String
-//  ): ModuleBuild[_] = {
-//    //user shouldn't be forced to set this variable
-//    val sbtOfflineMode = sys.env.getOrElse("SBT_OFFLINE_MODE", "false").toBoolean
-//
-//    val defaultSettings: Set[Def.Setting[_]] = Set(
-//      name := projectArtifact,
-//      version := mavenVersion,
-//      organization := projectOrganization,
-//      offline := sbtOfflineMode
-//    )
-//    new ModuleBuild[_](defaultSettings)
-//  }
-//}
