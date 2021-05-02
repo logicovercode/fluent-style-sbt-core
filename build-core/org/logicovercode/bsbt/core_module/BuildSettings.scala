@@ -1,10 +1,14 @@
 package org.logicovercode.bsbt.core_module
 
+import org.apache.ivy.core.module.descriptor.License
 import org.logicovercode.bsbt.docker.DockerSettings
 import org.logicovercode.bsbt.docker.model.IDockerService
 import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.Keys._
 import sbt._
+import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
+
+import java.net.URL
 
 abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.Setting[_]])
   extends IBuildSettings[T]
@@ -95,6 +99,28 @@ abstract class BuildSettings[T <: BuildSettings[T]] ( val sbtSettings: Set[Def.S
     val allSettings = this.settings ++ settings ++ containerSettings
 
     moduleWithNewSettings(allSettings.toSet)
+  }
+
+  def argsRequiredForPublishing(
+                                 projectDevelopers: List[Developer],
+                                 license: License,
+                                 homePageUrl: URL,
+                                 moduleScmInfo: ScmInfo,
+                                 mavenRepository: MavenRepository
+                               ): T = {
+
+    println("adding publishing settings")
+    val _settings = Set(
+      licenses += (license.getName, new URL(license.getUrl)),
+      homepage := Option(homePageUrl),
+      scmInfo := Option(moduleScmInfo),
+      developers := projectDevelopers,
+      publishMavenStyle := true,
+      publishTo := Some(mavenRepository)
+    )
+
+    val allSettings = this.sbtSettings ++ _settings
+    moduleWithNewSettings(allSettings)
   }
 
   private def resolverSettingsSet(
