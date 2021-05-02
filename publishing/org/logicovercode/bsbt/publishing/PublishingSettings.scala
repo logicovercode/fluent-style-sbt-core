@@ -1,7 +1,7 @@
 package org.logicovercode.bsbt.publishing
 
 import org.apache.ivy.core.module.descriptor.License
-import org.logicovercode.bsbt.core.model.ModuleBuild
+import org.logicovercode.bsbt.core_module.model.BuildSettings
 import sbt.Keys.{publishTo, _}
 import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
 
@@ -10,7 +10,7 @@ import java.util.Objects
 
 trait PublishingSettings extends PublishingModel {
 
-  implicit class ModuleBuildArtifactPublishExtension(moduleBuild: ModuleBuild) {
+  implicit class ModuleBuildArtifactPublishExtension(moduleBuild: BuildSettings[_]) {
 
     def argsRequiredForPublishing(
         projectDevelopers: List[Developer],
@@ -18,7 +18,7 @@ trait PublishingSettings extends PublishingModel {
         homePageUrl: URL,
         moduleScmInfo: ScmInfo,
         mavenRepository: MavenRepository
-    ): ModuleBuild = {
+    ): BuildSettings[_] = {
 
       println("adding publishing settings")
       val _settings = Set(
@@ -31,7 +31,8 @@ trait PublishingSettings extends PublishingModel {
       )
 
       val allSettings = moduleBuild.settings.toSet ++ _settings
-      ModuleBuild(allSettings)
+      //ModuleBuild(allSettings)
+      null
     }
   }
 

@@ -1,4 +1,4 @@
-package org.logicovercode.bsbt.core
+package org.logicovercode.bsbt.core_module
 
 import sbt._
 
@@ -29,6 +29,11 @@ trait ProjectSettings {
     }
   }
 
-  //val SbtModule = model.SbtModule
+  val Module = model.SbtModule
+  type Module = model.SbtModule
+
+  @Deprecated
+  val SbtModule = model.SbtModule
+  @Deprecated
   type SbtModule = model.SbtModule
 }

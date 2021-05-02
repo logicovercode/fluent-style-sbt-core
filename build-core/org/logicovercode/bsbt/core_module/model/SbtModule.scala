@@ -1,8 +1,8 @@
-package org.logicovercode.bsbt.core.model
+package org.logicovercode.bsbt.core_module.model
 
 import sbt.{ClasspathDep, ModuleID, ProjectRef, ProjectReference, classpathDependency, uri}
 
-case class SbtModule private[SbtModule] (
+case class SbtModule private[SbtModule](
     moduleID: ModuleID,
     //TODO, this field is added, as not able to extract ProjectRef from ClasspathDep[ProjectReference]
     private val optionalProjectRef: Option[ProjectRef],

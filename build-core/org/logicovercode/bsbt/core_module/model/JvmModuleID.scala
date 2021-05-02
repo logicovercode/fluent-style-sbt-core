@@ -1,4 +1,4 @@
-package org.logicovercode.bsbt.core.model
+package org.logicovercode.bsbt.core_module.model
 
 import sbt.librarymanagement.{MavenRepository, ModuleID}
 

@@ -1,9 +1,9 @@
-package org.logicovercode.bsbt.core.model
+package org.logicovercode.bsbt.core_module.model
 
 import org.logicovercode.bsbt.docker.model.IDockerService
 import sbt.{Def, ModuleID}
 
-trait BuildModuleSettings[T] {
+trait IBuildSettings[T <: BuildSettings[T]] {
 
   def sbtOffLineMode(sbtOffLineMode: Boolean): T
 
@@ -16,8 +16,6 @@ trait BuildModuleSettings[T] {
   def testResourceDirectories(testResourceDirectories: String*): T
 
   def sbtPlugins(sbtPlugins: ModuleID*): T
-
-  def moduleScalaVersion(scalaVersion: String): T
 
   def dependencies(projectDependencies: Seq[JvmModuleID]*): T
 

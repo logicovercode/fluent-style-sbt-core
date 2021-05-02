@@ -60,7 +60,7 @@ object DockerHostAndClientReResolver {
   private def recomputeHost(dockerHost: String): String = {
     val stripped = dockerHost.replaceAll(".*://", "")
     val hostAndPort = HostAndPort.fromString(stripped)
-    val hostText = hostAndPort.getHost
+    val hostText = hostAndPort.getHostText
 
     val port = hostAndPort.getPortOrDefault(DEFAULT_PORT)
     val address = if (isNullOrEmpty(hostText)) DEFAULT_ADDRESS else hostText
