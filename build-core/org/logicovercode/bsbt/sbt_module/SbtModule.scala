@@ -1,4 +1,4 @@
-package org.logicovercode.bsbt.core_module
+package org.logicovercode.bsbt.sbt_module
 
 import sbt.{ClasspathDep, ModuleID, ProjectRef, ProjectReference, classpathDependency, uri}
 

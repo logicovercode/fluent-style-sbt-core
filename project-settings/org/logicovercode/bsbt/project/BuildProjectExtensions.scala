@@ -1,9 +1,9 @@
 package org.logicovercode.bsbt.project
 
-import org.logicovercode.bsbt.core_module.SbtModule
+import org.logicovercode.bsbt.sbt_module.SbtModule
 import sbt.{ClasspathDep, Keys, Project, ProjectReference}
 
-trait BuildSettingsProjectExtensions {
+trait BuildProjectExtensions {
 
   implicit class ProjectExtension(project: Project) {
     def dependsOn(sbtModules: SbtModule*): Project = {

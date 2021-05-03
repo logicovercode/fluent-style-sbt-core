@@ -1,10 +1,10 @@
-package org.logicovercode.bsbt.core_module
+package org.logicovercode.bsbt.build
 
 import org.logicovercode.bsbt.docker.model.IDockerService
 import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.{Def, ModuleID}
 
-trait IBuildSettings[T <: BuildSettings[T]] {
+trait IBuild[T <: Build[T]] {
 
   def sourceDirectories(projectSourceDirectories: String*): T
 

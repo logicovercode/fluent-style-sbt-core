@@ -1,9 +1,9 @@
-package org.logicovercode.bsbt.core_module
+package org.logicovercode.bsbt.build
 
 import sbt.Def
 import sbt.Keys._
 
-trait BuildApply[T <: BuildSettings[T]] extends BuildFactory[T] {
+trait BuildApply[T <: Build[T]] extends BuildFactory[T] {
   def apply(
              projectOrganization: String,
              projectArtifact: String,

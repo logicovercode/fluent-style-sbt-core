@@ -1,14 +1,14 @@
 package org.logicovercode.bsbt.publishing
 
 import org.apache.ivy.core.module.descriptor.License
-import org.logicovercode.bsbt.core_module.BuildSettings
-import org.logicovercode.bsbt.java_module.JavaBuildSettings
-import org.logicovercode.bsbt.scala_module.ScalaBuildSettings
+import org.logicovercode.bsbt.build.Build
+import org.logicovercode.bsbt.java_module.JavaBuild
+import org.logicovercode.bsbt.scala_module.ScalaBuild
 import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
 
 import java.net.URL
 
-trait BuildPublishingSettings[T <: BuildSettings[T]]{
+trait BuildPublishingSettings[T <: Build[T]]{
   def argsRequiredForPublishing(
                                  projectDevelopers: List[Developer],
                                  license: License,
@@ -36,27 +36,27 @@ trait BuildSettingsPublishingExtensions {
     }
   }
 
-  protected implicit class JavaBuildSettingsExtension(javaBuildSettings: JavaBuildSettings)
-    extends BuildPublishingSettings[JavaBuildSettings]
+  protected implicit class JavaBuildSettingsExtension(javaBuildSettings: JavaBuild)
+    extends BuildPublishingSettings[JavaBuild]
       with PublishingSettings {
     override def argsRequiredForPublishing(projectDevelopers: List[Developer],
                                            license: License, homePageUrl: URL,
                                            moduleScmInfo: ScmInfo,
-                                           mavenRepository: MavenRepository): JavaBuildSettings = {
+                                           mavenRepository: MavenRepository): JavaBuild = {
       val _settings = argsRequiredForPublishingSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
-      JavaBuildSettings( javaBuildSettings.sbtSettings ++ _settings)
+      JavaBuild( javaBuildSettings.sbtSettings ++ _settings)
     }
   }
 
-  protected implicit class ScalaBuildSettingsExtension(scalaBuildSettings: ScalaBuildSettings)
-    extends BuildPublishingSettings[ScalaBuildSettings]
+  protected implicit class ScalaBuildSettingsExtension(scalaBuildSettings: ScalaBuild)
+    extends BuildPublishingSettings[ScalaBuild]
       with PublishingSettings {
     override def argsRequiredForPublishing(projectDevelopers: List[Developer],
                                            license: License, homePageUrl: URL,
                                            moduleScmInfo: ScmInfo,
-                                           mavenRepository: MavenRepository): ScalaBuildSettings = {
+                                           mavenRepository: MavenRepository): ScalaBuild = {
       val _settings = argsRequiredForPublishingSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
-      ScalaBuildSettings( scalaBuildSettings.sbtSettings ++ _settings)
+      ScalaBuild( scalaBuildSettings.sbtSettings ++ _settings)
     }
   }
 
