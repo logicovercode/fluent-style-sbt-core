@@ -27,14 +27,14 @@ trait BuildPublishingExtensions {
     }
   }
 
-  implicit class JavaBuildSettingsExtension(javaBuildSettings: JavaBuild)
+  implicit class JavaBuildPublishingSettingsExtension(javaBuildSettings: JavaBuild)
     extends BuildPublishingSettings[JavaBuild] {
     override def moduleWithNewSettings(publishingSettings: Set[Def.Setting[_]]): JavaBuild = {
       JavaBuild(javaBuildSettings.sbtSettings ++ publishingSettings)
     }
   }
 
-  implicit class ScalaBuildSettingsExtension(scalaBuildSettings: ScalaBuild)
+  implicit class ScalaBuildPublishingSettingsExtension(scalaBuildSettings: ScalaBuild)
     extends BuildPublishingSettings[ScalaBuild] {
     override def moduleWithNewSettings(publishingSettings: Set[Def.Setting[_]]): ScalaBuild = {
       ScalaBuild(scalaBuildSettings.sbtSettings ++ publishingSettings)
