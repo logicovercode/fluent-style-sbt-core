@@ -6,13 +6,6 @@ import sbt._
 
 case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[JavaBuild](sbtSettings) {
 
-  def scalaLibInTestScope() : JavaBuild = {
-    val scalaLibInTestScopeSettings = Set(
-      libraryDependencies += "org.scala-lang" % "scala-library" % scalaVersion.value % Test
-    )
-    JavaBuild(sbtSettings ++ scalaLibInTestScopeSettings)
-  }
-
   override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): JavaBuild = JavaBuild(allSettings)
 }
 
