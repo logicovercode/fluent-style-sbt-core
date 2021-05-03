@@ -18,7 +18,7 @@ trait BuildPublishingSettings[T <: Build[T]]{
                                ): T
 }
 
-trait BuildSettingsPublishingExtensions {
+trait BuildPublishingExtensions {
 
   case class GithubRepo private (
       private val githubUser: String,
