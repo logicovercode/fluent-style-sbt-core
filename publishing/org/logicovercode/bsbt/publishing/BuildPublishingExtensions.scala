@@ -36,7 +36,7 @@ trait BuildPublishingExtensions {
     }
   }
 
-  protected implicit class JavaBuildSettingsExtension(javaBuildSettings: JavaBuild)
+  implicit class JavaBuildSettingsExtension(javaBuildSettings: JavaBuild)
     extends BuildPublishingSettings[JavaBuild]
       with PublishingSettings {
     override def argsRequiredForPublishing(projectDevelopers: List[Developer],
@@ -48,7 +48,7 @@ trait BuildPublishingExtensions {
     }
   }
 
-  protected implicit class ScalaBuildSettingsExtension(scalaBuildSettings: ScalaBuild)
+  implicit class ScalaBuildSettingsExtension(scalaBuildSettings: ScalaBuild)
     extends BuildPublishingSettings[ScalaBuild]
       with PublishingSettings {
     override def argsRequiredForPublishing(projectDevelopers: List[Developer],
