@@ -23,13 +23,13 @@ Compile / unmanagedSourceDirectories ++= projectSourceDirs.map(dir => (Compile /
 
 organization := "org.logicovercode"
 
-val cto = Developer(
-  "cto",
-  "cto",
-  "oss@logicovercode.com",
+val techLead = Developer(
+  "techLead",
+  "techLead",
+  "techlead@logicovercode.com",
   url("https://github.com/logicovercode")
 )
-developers := List(cto)
+developers := List(techLead)
 
 homepage := Some(
   url("https://github.com/logicovercode/FluentStyleSbtCorePlugin")
