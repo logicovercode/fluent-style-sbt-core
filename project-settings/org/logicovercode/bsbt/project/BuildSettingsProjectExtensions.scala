@@ -1,14 +1,12 @@
-package org.logicovercode.bsbt.all_modules
+package org.logicovercode.bsbt.project
 
-import org.logicovercode.bsbt.core_module
-import org.logicovercode.bsbt.java_module.JavaBuildSettings
-import org.logicovercode.bsbt.scala_module.ScalaBuildSettings
+import org.logicovercode.bsbt.core_module.SbtModule
 import sbt.{ClasspathDep, Keys, Project, ProjectReference}
 
-trait ProjectSettings {
+trait BuildSettingsProjectExtensions {
 
   implicit class ProjectExtension(project: Project) {
-    def dependsOn(sbtModules: Module*): Project = {
+    def dependsOn(sbtModules: SbtModule*): Project = {
       val _ @(sbtModulesWithSourcesRequired, sbtModulesWithSourceNotRequired) =
         sbtModules.partition(_.includeSource)
       val moduleIds = sbtModulesWithSourceNotRequired.map(_.moduleID)
@@ -21,7 +19,7 @@ trait ProjectSettings {
   }
 
   private def tryToGetModuleSource(
-      sbtModule: Module
+      sbtModule: SbtModule
   ): ClasspathDep[ProjectReference] = {
     sbtModule.optionalSource match {
       case Some(projectRef) => projectRef
@@ -31,17 +29,4 @@ trait ProjectSettings {
         )
     }
   }
-
-  val JBuild = JavaBuildSettings
-
-  val SBuild = ScalaBuildSettings
-  //type SBuild = ScalaBuildSettings
-
-  val Module = core_module.SbtModule
-  type Module = core_module.SbtModule
-
-  @Deprecated
-  val SbtModule = core_module.SbtModule
-  @Deprecated
-  type SbtModule = core_module.SbtModule
 }

@@ -94,28 +94,6 @@ abstract class BuildSettings[T <: BuildSettings[T]](val sbtSettings: Set[Def.Set
     moduleWithNewSettings(allSettings)
   }
 
-  def argsRequiredForPublishing(
-      projectDevelopers: List[Developer],
-      license: License,
-      homePageUrl: URL,
-      moduleScmInfo: ScmInfo,
-      mavenRepository: MavenRepository
-  ): T = {
-
-    println("adding publishing settings")
-    val _settings = Set(
-      licenses += (license.getName, new URL(license.getUrl)),
-      homepage := Option(homePageUrl),
-      scmInfo := Option(moduleScmInfo),
-      developers := projectDevelopers,
-      publishMavenStyle := true,
-      publishTo := Some(mavenRepository)
-    )
-
-    val allSettings = this.sbtSettings ++ _settings
-    moduleWithNewSettings(allSettings)
-  }
-
   private def resolverSettingsSet(
       dependencies: Set[JvmModuleID]
   ): Set[Def.Setting[_]] = {

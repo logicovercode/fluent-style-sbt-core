@@ -2,9 +2,7 @@ package org.logicovercode.bsbt.module_id
 
 import sbt.librarymanagement.{MavenRepository, ModuleID}
 
-trait ModuleIDSettings {
-
-
+trait ModuleIDImplicitConversions {
 
   implicit def moduleIdToSeqJvmModuleID(moduleID: ModuleID): Seq[JvmModuleID] = Seq(JvmModuleID(moduleID))
 

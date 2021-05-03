@@ -1,10 +1,10 @@
 package org.logicovercode.bsbt
 
-import org.logicovercode.bsbt.all_modules.ProjectSettings
-import org.logicovercode.bsbt.docker.{DockerExtension, DockerSettings}
-import org.logicovercode.bsbt.module_id.ModuleIDSettings
-import org.logicovercode.bsbt.paths.PluginPaths
-import org.logicovercode.bsbt.publishing.PublishingModel
+import org.logicovercode.bsbt.docker.{DockerImplicitConversions, DockerSettings}
+import org.logicovercode.bsbt.module_id.ModuleIDImplicitConversions
+import org.logicovercode.bsbt.paths.PluginPathSettings
+import org.logicovercode.bsbt.project.BuildSettingsProjectExtensions
+import org.logicovercode.bsbt.publishing.BuildSettingsPublishingExtensions
 import org.logicovercode.bsbt.scalafmt.ScalaFmtSettings
 import sbt.AutoPlugin
 
@@ -12,10 +12,10 @@ import sbt.AutoPlugin
   */
 object BuilderStyleBuild extends AutoPlugin with DockerSettings with ScalaFmtSettings {
 
-  object autoImport extends ModuleIDSettings
-    with ProjectSettings
-    with PublishingModel
-    with PluginPaths with ScalaFmtSettings with DockerExtension
+  object autoImport extends ModuleIDImplicitConversions
+    with BuildSettingsProjectExtensions
+    with BuildSettingsPublishingExtensions
+    with PluginPathSettings with ScalaFmtSettings with DockerImplicitConversions
 
   override lazy val projectSettings = super.projectSettings ++ dockerSettings ++ scalaFmtSettings
 }

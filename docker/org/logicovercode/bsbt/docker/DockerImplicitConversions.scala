@@ -3,7 +3,7 @@ package org.logicovercode.bsbt.docker
 import org.logicovercode.bsbt.docker.model._
 import sbt.Def
 
-trait DockerExtension {
+trait DockerImplicitConversions {
 
   type DcDef = DockerContainerDefinition
 
