@@ -2,7 +2,7 @@ package org.logicovercode.bsbt.sbt_module
 
 import sbt.{ClasspathDep, ModuleID, ProjectRef, ProjectReference, classpathDependency, uri}
 
-case class SbtModule private[SbtModule](
+case class SbtProject private[SbtProject](
     moduleID: ModuleID,
     //TODO, this field is added, as not able to extract ProjectRef from ClasspathDep[ProjectReference]
     private val optionalProjectRef: Option[ProjectRef],
@@ -10,8 +10,8 @@ case class SbtModule private[SbtModule](
     private val includeModuleSource: Boolean = false
 ) {
 
-  def sourceCode: SbtModule =
-    SbtModule(moduleID, optionalProjectRef, optionalModuleSource, true)
+  def sourceCode: SbtProject =
+    SbtProject(moduleID, optionalProjectRef, optionalModuleSource, true)
 
   def projectRef: ProjectRef = optionalProjectRef.get
 
@@ -21,18 +21,18 @@ case class SbtModule private[SbtModule](
   def optionalSource = optionalModuleSource
 }
 
-object SbtModule {
+object SbtProject {
 
   def apply(
       moduleID: ModuleID,
       sbtModulePath: String,
       sbtModuleName: String
-  ): SbtModule = {
+  ): SbtProject = {
     val cpd = ProjectRef(uri(sbtModulePath), sbtModuleName)
-    new SbtModule(moduleID, Option(cpd), Option(classpathDependency(cpd)))
+    new SbtProject(moduleID, Option(cpd), Option(classpathDependency(cpd)))
   }
 
-  def apply(moduleID: ModuleID): SbtModule = {
-    new SbtModule(moduleID, None, None)
+  def apply(moduleID: ModuleID): SbtProject = {
+    new SbtProject(moduleID, None, None)
   }
 }

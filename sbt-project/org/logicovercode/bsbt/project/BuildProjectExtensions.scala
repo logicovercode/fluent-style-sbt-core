@@ -1,12 +1,12 @@
 package org.logicovercode.bsbt.project
 
-import org.logicovercode.bsbt.sbt_module.SbtModule
+import org.logicovercode.bsbt.sbt_module.SbtProject
 import sbt.{ClasspathDep, Keys, Project, ProjectReference}
 
 trait BuildProjectExtensions {
 
   implicit class ProjectExtension(project: Project) {
-    def dependsOn(sbtModules: SbtModule*): Project = {
+    def dependsOn(sbtModules: SbtProject*): Project = {
       val _ @(sbtModulesWithSourcesRequired, sbtModulesWithSourceNotRequired) =
         sbtModules.partition(_.includeSource)
       val moduleIds = sbtModulesWithSourceNotRequired.map(_.moduleID)
@@ -19,7 +19,7 @@ trait BuildProjectExtensions {
   }
 
   private def tryToGetModuleSource(
-      sbtModule: SbtModule
+      sbtModule: SbtProject
   ): ClasspathDep[ProjectReference] = {
     sbtModule.optionalSource match {
       case Some(projectRef) => projectRef
