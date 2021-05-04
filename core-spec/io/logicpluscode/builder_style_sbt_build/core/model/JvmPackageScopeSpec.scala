@@ -1,6 +1,6 @@
 package org.mogli.baseplugin.core.model
 
-import org.logicovercode.bsbt.core.model.JvmModuleID
+import org.logicovercode.bsbt.build.model.JvmModuleID
 import org.scalatest.flatspec.AsyncFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 import sbt._

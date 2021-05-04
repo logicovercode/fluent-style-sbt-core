@@ -1,10 +1,15 @@
 package org.logicovercode.bsbt.publishing
 
+import org.logicovercode.bsbt.java_module.JavaBuild
+import org.logicovercode.bsbt.scala_module.ScalaBuild
+import sbt.Def
 import sbt.librarymanagement.ScmInfo
 
 import java.net.URL
 
-trait PublishingModel {
+
+
+trait BuildPublishingExtensions {
 
   case class GithubRepo private (
       private val githubUser: String,
@@ -22,7 +27,22 @@ trait PublishingModel {
     }
   }
 
-//  object GithubRepo{
+  implicit class JavaBuildPublishingSettingsExtension(javaBuildSettings: JavaBuild)
+    extends BuildPublishingSettings[JavaBuild] {
+    override def moduleWithNewSettings(publishingSettings: Set[Def.Setting[_]]): JavaBuild = {
+      JavaBuild(javaBuildSettings.sbtSettings ++ publishingSettings)
+    }
+  }
+
+  implicit class ScalaBuildPublishingSettingsExtension(scalaBuildSettings: ScalaBuild)
+    extends BuildPublishingSettings[ScalaBuild] {
+    override def moduleWithNewSettings(publishingSettings: Set[Def.Setting[_]]): ScalaBuild = {
+      ScalaBuild(scalaBuildSettings.sbtSettings ++ publishingSettings)
+    }
+  }
+
+
+    //  object GithubRepo{
 //    def apply(githubUser : String, githubRepoName : String) : GithubRepo = new GithubRepo(githubUser, githubRepoName)
 //  }
 

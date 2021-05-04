@@ -2,7 +2,7 @@ package org.logicovercode.bsbt.os
 
 object OsFunctions {
 
-  def currentOsOption = sys.props.get("os.name").map(_.toLowerCase)
+  def currentOsOption : Option[String] = sys.props.get("os.name").map(_.toLowerCase)
 
   @Deprecated
   def isWindowsCategoryOs: Boolean = (for {

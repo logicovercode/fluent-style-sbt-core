@@ -1,38 +1,31 @@
 package org.logicovercode.bsbt.publishing
 
 import org.apache.ivy.core.module.descriptor.License
-import org.logicovercode.bsbt.core.model.ModuleBuild
-import sbt.Keys.{publishTo, _}
+import sbt.Def
+import sbt.Keys.{developers, homepage, licenses, publishMavenStyle, publishTo, scmInfo}
 import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
 
 import java.net.URL
-import java.util.Objects
 
-trait PublishingSettings extends PublishingModel {
+trait PublishingSettings {
 
-  implicit class ModuleBuildArtifactPublishExtension(moduleBuild: ModuleBuild) {
+  def argsRequiredForPublishingSettings(
+                                 projectDevelopers: List[Developer],
+                                 license: License,
+                                 homePageUrl: URL,
+                                 moduleScmInfo: ScmInfo,
+                                 mavenRepository: MavenRepository
+                               ): Set[Def.Setting[_]] = {
 
-    def argsRequiredForPublishing(
-        projectDevelopers: List[Developer],
-        license: License,
-        homePageUrl: URL,
-        moduleScmInfo: ScmInfo,
-        mavenRepository: MavenRepository
-    ): ModuleBuild = {
+    val _settings = Set(
+      licenses += (license.getName, new URL(license.getUrl)),
+      homepage := Option(homePageUrl),
+      scmInfo := Option(moduleScmInfo),
+      developers := projectDevelopers,
+      publishMavenStyle := true,
+      publishTo := Some(mavenRepository)
+    )
 
-      println("adding publishing settings")
-      val _settings = Set(
-        licenses += (license.getName, new URL(license.getUrl)),
-        homepage := Option(homePageUrl),
-        scmInfo := Option(moduleScmInfo),
-        developers := projectDevelopers,
-        publishMavenStyle := true,
-        publishTo := Some(mavenRepository)
-      )
-
-      val allSettings = moduleBuild.settings.toSet ++ _settings
-      ModuleBuild(allSettings)
-    }
+    _settings.toSet
   }
-
 }

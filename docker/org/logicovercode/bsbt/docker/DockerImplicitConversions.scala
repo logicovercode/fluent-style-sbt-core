@@ -3,14 +3,13 @@ package org.logicovercode.bsbt.docker
 import org.logicovercode.bsbt.docker.model._
 import sbt.Def
 
-trait DockerExtension {
+trait DockerImplicitConversions {
 
   type DcDef = DockerContainerDefinition
 
   implicit def dockerContainerDefinitionToIDockerService(dcDef: DcDef): IDockerService = {
     new IDockerService {
       override def instance(): DockerService = DockerService(Seq(dcDef))
-
       override def sbtSettings(): Set[Def.Setting[_]] = Set()
     }
   }
