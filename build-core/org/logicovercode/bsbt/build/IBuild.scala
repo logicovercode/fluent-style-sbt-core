@@ -4,7 +4,11 @@ import org.logicovercode.bsbt.docker.model.IDockerService
 import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.{Def, ModuleID}
 
-trait IBuild[T <: Build[T]] {
+trait ISettings{
+  def settings: Seq[Def.Setting[_]]
+}
+
+trait IBuild[T <: Build[T]] extends ISettings{
 
   def sourceDirectories(projectSourceDirectories: String*): T
 
@@ -21,6 +25,4 @@ trait IBuild[T <: Build[T]] {
   def testDependencies(projectDependencies: Seq[JvmModuleID]*): T
 
   def dockerServices(dockerServices: IDockerService*): T
-
-  def settings: Seq[Def.Setting[_]]
 }

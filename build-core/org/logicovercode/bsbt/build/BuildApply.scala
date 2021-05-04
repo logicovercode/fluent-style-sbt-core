@@ -1,7 +1,8 @@
 package org.logicovercode.bsbt.build
 
-import sbt.Def
+import sbt._
 import sbt.Keys._
+
 
 trait BuildApply[T <: Build[T]] extends BuildFactory[T] {
   def apply(
@@ -17,6 +18,7 @@ trait BuildApply[T <: Build[T]] extends BuildFactory[T] {
       version := mavenVersion,
       organization := projectOrganization,
       offline := sbtOfflineMode,
+      publishConfiguration := publishConfiguration.value.withOverwrite(true),
       publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
     )
 

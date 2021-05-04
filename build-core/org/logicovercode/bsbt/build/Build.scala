@@ -6,10 +6,12 @@ import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.Keys._
 import sbt._
 
-abstract class Build[T <: Build[T]](val sbtSettings: Set[Def.Setting[_]])
+trait Build[T <: Build[T]]
     extends IBuild[T]
     with BuildFactory[T]
     with DockerSettings {
+
+  val sbtSettings: Set[Def.Setting[_]]
 
   def sourceDirectories(projectSourceDirectories: String*): T = {
     val _settings = Set(
@@ -90,7 +92,7 @@ abstract class Build[T <: Build[T]](val sbtSettings: Set[Def.Setting[_]])
     moduleWithNewSettings(allSettings)
   }
 
-  private def resolverSettingsSet(
+  protected def resolverSettingsSet(
       dependencies: Set[JvmModuleID]
   ): Set[Def.Setting[_]] = {
     val dependencyResolvers =
@@ -98,7 +100,7 @@ abstract class Build[T <: Build[T]](val sbtSettings: Set[Def.Setting[_]])
     Set(resolvers ++= dependencyResolvers.toSeq)
   }
 
-  private def moduleIdSettings(
+  protected def moduleIdSettings(
       dependencies: Set[ModuleID]
   ): Set[Def.Setting[_]] = {
     Set(libraryDependencies ++= dependencies.toSeq)

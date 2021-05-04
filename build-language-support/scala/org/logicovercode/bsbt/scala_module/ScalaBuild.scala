@@ -1,10 +1,14 @@
 package org.logicovercode.bsbt.scala_module
 
-import org.logicovercode.bsbt.build.{BuildApply, Build}
-import sbt.{Def, _}
-import sbt.Keys._
+import org.logicovercode.bsbt.build.{Build, BuildApply, IBuild}
+import sbt.Def
+import sbt.Keys.scalaVersion
 
-case class ScalaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[ScalaBuild](sbtSettings) {
+trait IScalaBuild[T <: Build[T]] extends IBuild[T]{
+  def moduleScalaVersion(_scalaVersion: String): T
+}
+
+case class ScalaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[ScalaBuild] with IScalaBuild[ScalaBuild] {
 
   override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): ScalaBuild = ScalaBuild(allSettings)
 

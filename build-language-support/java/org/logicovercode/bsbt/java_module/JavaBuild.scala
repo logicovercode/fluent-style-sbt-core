@@ -4,7 +4,7 @@ import org.logicovercode.bsbt.build.{Build, BuildApply}
 import sbt.Keys._
 import sbt._
 
-case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[JavaBuild](sbtSettings) {
+case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[JavaBuild] {
 
   override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): JavaBuild = JavaBuild(allSettings)
 }
