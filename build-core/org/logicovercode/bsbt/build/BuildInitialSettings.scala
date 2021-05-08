@@ -4,12 +4,13 @@ import sbt._
 import sbt.Keys._
 
 
-trait BuildApply[T <: Build[T]] extends BuildFactory[T] {
-  def apply(
-             projectOrganization: String,
+object BuildInitialSettings {
+
+
+  def initialSettings(projectOrganization: String,
              projectArtifact: String,
              mavenVersion: String
-           ): T = {
+           ): Set[Def.Setting[_]] = {
 
     val sbtOfflineMode = sys.env.getOrElse("SBT_OFFLINE_MODE", "false").toBoolean
 
@@ -22,6 +23,6 @@ trait BuildApply[T <: Build[T]] extends BuildFactory[T] {
       publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
     )
 
-    moduleWithNewSettings(defaultSettings)
+    defaultSettings
   }
 }

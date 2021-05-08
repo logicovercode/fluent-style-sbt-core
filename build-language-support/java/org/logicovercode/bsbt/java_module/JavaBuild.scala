@@ -1,6 +1,6 @@
 package org.logicovercode.bsbt.java_module
 
-import org.logicovercode.bsbt.build.{Build, BuildApply}
+import org.logicovercode.bsbt.build.{Build, BuildInitialSettings}
 import sbt.Keys._
 import sbt._
 
@@ -9,10 +9,9 @@ case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Buil
   override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): JavaBuild = JavaBuild(allSettings)
 }
 
-object JavaBuild extends BuildApply[JavaBuild] {
-  override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): JavaBuild = JavaBuild(allSettings)
+object JavaBuild {
 
-  override def apply(projectOrganization: String, projectArtifact: String, mavenVersion: String): JavaBuild = {
+  def apply(projectOrganization: String, projectArtifact: String, mavenVersion: String): JavaBuild = {
 
     val additionalJavaBuildSettings : Set[Def.Setting[_]] = Set(
       publishMavenStyle := true,
@@ -20,7 +19,7 @@ object JavaBuild extends BuildApply[JavaBuild] {
       autoScalaLibrary := false
     )
 
-    val javaBuild = super.apply(projectOrganization, projectArtifact, mavenVersion)
-    new JavaBuild(javaBuild.sbtSettings ++ additionalJavaBuildSettings)
+    val initialSettings = BuildInitialSettings.initialSettings(projectOrganization, projectArtifact, mavenVersion)
+    new JavaBuild(initialSettings ++ additionalJavaBuildSettings)
   }
 }

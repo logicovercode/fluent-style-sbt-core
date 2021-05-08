@@ -1,5 +1,6 @@
 package org.logicovercode.bsbt.publishing
 
+import org.apache.ivy.core.module.descriptor.License
 import org.logicovercode.bsbt.java_module.JavaBuild
 import org.logicovercode.bsbt.scala_module.ScalaBuild
 import sbt.Def
@@ -29,15 +30,31 @@ trait BuildPublishingExtensions {
 
   implicit class JavaBuildPublishingSettingsExtension(javaBuildSettings: JavaBuild)
     extends BuildPublishingSettings[JavaBuild] {
-    override def moduleWithNewSettings(publishingSettings: Set[Def.Setting[_]]): JavaBuild = {
-      JavaBuild(javaBuildSettings.sbtSettings ++ publishingSettings)
+
+    override def argsRequiredForPublishing(projectDevelopers: List[sbt.Developer],
+                                           license: License, homePageUrl: URL,
+                                           moduleScmInfo: sbt.ScmInfo,
+                                           mavenRepository: sbt.MavenRepository): JavaBuild = {
+      JavaBuild(
+        javaBuildSettings.sbtSettings
+        ++
+          argsRequiredForPublishingSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
+      )
     }
   }
 
   implicit class ScalaBuildPublishingSettingsExtension(scalaBuildSettings: ScalaBuild)
     extends BuildPublishingSettings[ScalaBuild] {
-    override def moduleWithNewSettings(publishingSettings: Set[Def.Setting[_]]): ScalaBuild = {
-      ScalaBuild(scalaBuildSettings.sbtSettings ++ publishingSettings)
+
+    override def argsRequiredForPublishing(projectDevelopers: List[sbt.Developer],
+                                           license: License, homePageUrl: URL,
+                                           moduleScmInfo: sbt.ScmInfo,
+                                           mavenRepository: sbt.MavenRepository): ScalaBuild = {
+      ScalaBuild(
+        scalaBuildSettings.sbtSettings
+          ++
+          argsRequiredForPublishingSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
+      )
     }
   }
 

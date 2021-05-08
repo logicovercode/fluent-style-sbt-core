@@ -8,10 +8,12 @@ import sbt._
 
 trait Build[T <: Build[T]]
     extends IBuild[T]
-    with BuildFactory[T]
+    //with BuildFactory[T]
     with DockerSettings {
 
   val sbtSettings: Set[Def.Setting[_]]
+
+  def moduleWithNewSettings(sbtSettings: Set[Def.Setting[_]]) : T
 
   def sourceDirectories(projectSourceDirectories: String*): T = {
     val _settings = Set(

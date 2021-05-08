@@ -9,7 +9,7 @@ import java.net.URL
 
 trait PublishingSettings {
 
-  def argsRequiredForPublishingSettings(
+  final def argsRequiredForPublishingSettings(
                                  projectDevelopers: List[Developer],
                                  license: License,
                                  homePageUrl: URL,

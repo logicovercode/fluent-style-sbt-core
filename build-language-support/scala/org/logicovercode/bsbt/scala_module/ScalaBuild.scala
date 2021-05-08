@@ -1,8 +1,9 @@
 package org.logicovercode.bsbt.scala_module
 
-import org.logicovercode.bsbt.build.{Build, BuildApply, IBuild}
+import org.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild}
+import org.logicovercode.bsbt.java_module.JavaBuild
 import sbt.Def
-import sbt.Keys.scalaVersion
+import sbt.Keys.{autoScalaLibrary, crossPaths, publishMavenStyle, scalaVersion}
 
 trait IScalaBuild[T <: Build[T]] extends IBuild[T]{
   def moduleScalaVersion(_scalaVersion: String): T
@@ -18,6 +19,10 @@ case class ScalaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Bui
   }
 }
 
-object ScalaBuild extends BuildApply[ScalaBuild]{
-  override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): ScalaBuild = ScalaBuild(allSettings)
+object ScalaBuild {
+  def apply(projectOrganization: String, projectArtifact: String, mavenVersion: String): ScalaBuild = {
+
+    val initialSettings = BuildInitialSettings.initialSettings(projectOrganization, projectArtifact, mavenVersion)
+    new ScalaBuild(initialSettings)
+  }
 }
