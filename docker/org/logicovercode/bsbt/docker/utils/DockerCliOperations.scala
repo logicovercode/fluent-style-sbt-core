@@ -1,6 +1,6 @@
 package org.logicovercode.bsbt.docker.utils
 
-object DockerCommandOperations {
+object DockerCliOperations {
 
   final def imageName(organization: String, name: String): String = {
     val arr = organization.split("[.]")

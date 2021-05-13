@@ -5,11 +5,11 @@ import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.netty.NettyDockerCmdExecFactory
 import com.whisk.docker.{DockerCommandExecutor, DockerFactory}
 import com.whisk.docker.impl.dockerjava.{Docker, DockerJavaExecutor, DockerJavaExecutorFactory}
-import org.logicovercode.bsbt.docker.model.{DockerKitPerContainer, DockerService}
+import org.logicovercode.bsbt.docker.model.{ServiceDescription, MicroService}
 import org.logicovercode.bsbt.docker.win.DockerHostAndClientReResolver
 import org.logicovercode.bsbt.os.OsFunctions.isWindowsCategoryOs
 
-object DockerUtils {
+object DockerServiceOperations {
   def pid(): Long = {
 
     import java.lang.management.ManagementFactory
@@ -62,55 +62,33 @@ object DockerUtils {
     s"TASKKILL /F /PID $processId" !
   }
 
-  def dockerFactoryAndClient(osOption: Option[String]): (DockerFactory, DockerClient) = {
+  def startService(dockerService: MicroService): Unit = {
 
-    isWindowsCategoryOs(osOption) match {
-      case true =>
-        println("creating windows style docker instance")
-        val _ @(host, client) = DockerHostAndClientReResolver.hostAndClient()
-        val dockerFactory = new DockerFactory {
-          override def createExecutor(): DockerCommandExecutor = new DockerJavaExecutor(host, client)
-        }
-        (dockerFactory, client)
-      case false =>
-        println("creating linux style docker instance")
-        val docker = new Docker(DefaultDockerClientConfig.createDefaultConfigBuilder().build(), factory = new NettyDockerCmdExecFactory())
-        (new DockerJavaExecutorFactory(docker), docker.client)
-    }
-  }
-
-  def startService(dockerService: DockerService, dockerFactory: DockerFactory): Unit = {
-
-    val allContainerNetworksInSingleService = dockerService.containerDefinitions.map(_.dockerContainer.networkMode)
+    val allContainerNetworksInSingleService = dockerService.serviceDescriptions.map(_.container.networkMode)
 
     val optionComparer = Ordering[Option[String]]
 
     val allContainersNetworksAreSame = {
-      allContainerNetworksInSingleService.size == dockerService.containerDefinitions.size &&
+      allContainerNetworksInSingleService.size == dockerService.serviceDescriptions.size &&
       allContainerNetworksInSingleService.forall(netOpt => optionComparer.compare(netOpt, allContainerNetworksInSingleService(0)) == 0)
     }
 
-    dockerService.containerDefinitions.size == 0 match {
+    dockerService.serviceDescriptions.size == 0 match {
       case true => println("no services defined to start ...")
       case false => {
         allContainersNetworksAreSame match {
-          case true  => triggerService(dockerService, dockerFactory)
+          case true  => triggerService(dockerService)
           case false => println(s"networks don't match for $dockerService")
         }
       }
     }
   }
 
-  private def triggerService(dockerService: DockerService, dockerFactory: DockerFactory): Unit = {
+  private def triggerService(dockerService: MicroService): Unit = {
 
-    dockerService.containerDefinitions.map { dockerContainerDefinition =>
-      val dockerKitPerContainer = DockerKitPerContainer(
-        dockerContainerDefinition.dockerContainer,
-        dockerContainerDefinition.pullTimeout,
-        dockerContainerDefinition.startTimeout
-      )(dockerFactory)
+    dockerService.serviceDescriptions.foreach { dockerImage =>
 
-      val imageName = dockerContainerDefinition.dockerContainer.image
+      val imageName = dockerImage.container.image
       println(s"pulling image >$imageName<")
 
       import scala.sys.process._
@@ -119,7 +97,7 @@ object DockerUtils {
       s"$dockerPullCommand" !
 
       println("starting container from image : " + imageName)
-      dockerKitPerContainer.startAllOrFail()
+      dockerImage.startAllOrFail()
     }
   }
 

@@ -1,7 +1,7 @@
 package org.logicovercode.bsbt.build
 
 import org.logicovercode.bsbt.docker.DockerSettings
-import org.logicovercode.bsbt.docker.model.IDockerService
+import org.logicovercode.bsbt.docker.model.MicroService
 import org.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.Keys._
 import sbt._
@@ -13,7 +13,7 @@ trait Build[T <: Build[T]]
 
   val sbtSettings: Set[Def.Setting[_]]
 
-  def moduleWithNewSettings(sbtSettings: Set[Def.Setting[_]]) : T
+  def moduleWithNewSettings(sbtSettings: Set[Def.Setting[_]]): T
 
   def sourceDirectories(projectSourceDirectories: String*): T = {
     val _settings = Set(
@@ -80,16 +80,21 @@ trait Build[T <: Build[T]]
     )
   }
 
-  def dockerServices(dockerServices: IDockerService*): T = {
+  def services(dockerServices: MicroService*): T = {
     //this will remove duplicates
-    val dockerInstancesSet = (dockerServices map (_.instance())).toSet
-    val dockerServiceSettings: Seq[Def.Setting[_]] = Seq(
-      dependentDockerServices := dockerInstancesSet
+    val serviceSettings: Seq[Def.Setting[_]] = Seq(
+      dependentServices := dockerServices.toSet
     )
 
-    val containerSettings = dockerServices.flatMap(_.sbtSettings())
+    val allAdditionalSettings = for {
+      dockerService <- dockerServices
+      serviceDescription <- dockerService.serviceDescriptions
+      settings <- serviceDescription.serviceAdditionalSettings
+    } yield settings
 
-    val allSettings = this.sbtSettings ++ dockerServiceSettings ++ containerSettings
+    //val containerSettings = dockerServices.flatMap(_.sbtSettings())
+
+    val allSettings = this.sbtSettings ++ serviceSettings ++ allAdditionalSettings
 
     moduleWithNewSettings(allSettings)
   }

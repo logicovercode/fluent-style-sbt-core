@@ -1,41 +1,36 @@
 package org.logicovercode.bsbt.docker
 
-import org.logicovercode.bsbt.docker.utils.DockerCommandOperations._
-import org.logicovercode.bsbt.docker.model.{DockerContainerDefinition, DockerService}
-import org.logicovercode.bsbt.docker.utils.DockerUtils
-import org.logicovercode.bsbt.docker.utils.DockerUtils.createNetworkIfNotExists
+import org.logicovercode.bsbt.docker.model.{DockerInfra, MicroService}
+import org.logicovercode.bsbt.docker.utils.DockerCliOperations._
+import org.logicovercode.bsbt.docker.utils.DockerServiceOperations
 import org.logicovercode.bsbt.os.OsFunctions.currentOsOption
 import sbt.Keys._
 import sbt.{Def, _}
 
 trait DockerSettings  {
 
-  lazy val dependentDockerServices =
-    settingKey[Set[DockerService]]("set of dependent docker services")
+  lazy val dependentServices = settingKey[Set[MicroService]]("set of dependent docker services")
   lazy val startServices = taskKey[Unit]("start dependent containers")
-  lazy val buildImage =
-    inputKey[Unit]("build docker image on local with latest tag")
-  lazy val tagImageForGitHub =
-    taskKey[Unit]("tag latest docker image to push on github")
+  lazy val buildImage = inputKey[Unit]("build docker image on local with latest tag")
+  lazy val tagImageForGitHub = taskKey[Unit]("tag latest docker image to push on github")
   lazy val publishImageToGitHub = taskKey[Unit]("publish image to github")
 
   lazy val dockerSettings = Seq[Def.Setting[_]](
-    dependentDockerServices := Set(),
+    dependentServices := Set(),
     startServices := {
-      val dockerServices = (dependentDockerServices.value)
-      val (dockerFactory, dockerClient) = DockerUtils.dockerFactoryAndClient( currentOsOption )
+      val dockerServices = (dependentServices.value)
 
       val allNetworks = (for{
         dockerService <- dockerServices
-        containerDefinition <- dockerService.containerDefinitions
-        network = containerDefinition.dockerContainer.networkMode
+        containerDefinition <- dockerService.serviceDescriptions
+        network = containerDefinition.container.networkMode
       } yield network).flatten
 
-      allNetworks.foreach( DockerUtils.createNetworkIfNotExists(_, dockerClient) )
-      dockerServices.par.foreach( DockerUtils.startService(_, dockerFactory) )
+      allNetworks.foreach( DockerServiceOperations.createNetworkIfNotExists(_, DockerInfra.dockerClient) )
+      dockerServices.par.foreach( DockerServiceOperations.startService )
 
-      val sbtProcessId = DockerUtils.pid()
-      DockerUtils.killDockerManager(sbtProcessId, currentOsOption)
+      val sbtProcessId = DockerServiceOperations.pid()
+      DockerServiceOperations.killDockerManager(sbtProcessId, currentOsOption)
     },
     buildImage := {
       import complete.DefaultParsers._
