@@ -1,6 +1,6 @@
 name := "fluent-style-sbt-core"
 
-version := "0.0.417"
+version := "0.0.418"
 
 sbtPlugin := true
 

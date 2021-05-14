@@ -68,15 +68,17 @@ trait Build[T <: Build[T]]
 
   def testDependencies(projectDependencies: Seq[JvmModuleID]*): T = {
     val jvmModuleIdSet = projectDependencies.flatten.toSet
-    val (scopedJvmModuleIds, unscopedJvmModuleIds) =
-      jvmModuleIdSet.partition(jvmID => jvmID.moduleID.configurations.isDefined)
-    val effectiveModuleIds = scopedJvmModuleIds.map(
-      _.moduleID
-    ) ++ unscopedJvmModuleIds.map(jvmModuleID => jvmModuleID.moduleID % Test)
+
+    val jvmModuleIdsWithoutConfig = jvmModuleIdSet.map{ jvmModuleId =>
+      val moduleId = jvmModuleId.moduleID
+      val moduleIdWithoutConfig = moduleId.withConfigurations(None)
+      JvmModuleID( moduleIdWithoutConfig )
+    }
+
     moduleWithNewSettings(
       this.sbtSettings ++ moduleIdSettings(
-        effectiveModuleIds
-      ) ++ resolverSettingsSet(jvmModuleIdSet)
+        jvmModuleIdsWithoutConfig.map(_.moduleID % Test)
+      ) ++ resolverSettingsSet(jvmModuleIdsWithoutConfig)
     )
   }
 

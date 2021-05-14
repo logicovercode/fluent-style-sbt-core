@@ -1,6 +1,6 @@
 package org.logicovercode.bsbt.module_id
 
-import sbt.ModuleID
+import sbt._
 import sbt.librarymanagement.MavenRepository
 
 case class JvmModuleID(
@@ -10,5 +10,9 @@ case class JvmModuleID(
 
     def from(mavenRepoResolver: Option[MavenRepository]): JvmModuleID = {
       new JvmModuleID(moduleID, mavenRepoResolver) {}
+    }
+
+    def %(configuration : Configuration) : JvmModuleID = {
+      JvmModuleID(this.moduleID.withConfigurations(None) % configuration)
     }
   }
