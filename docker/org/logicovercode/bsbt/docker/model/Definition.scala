@@ -10,7 +10,7 @@ case class MicroService(serviceDescriptions : Seq[ServiceDescription])
 case class ServiceDescription(container: DockerContainer,
                               serviceAdditionalSettings: Set[Def.Setting[_]],
                               imagePullTimeout : FiniteDuration,
-                              containerStartTimeout : FiniteDuration)(implicit javaDockerFactory : DockerFactory) extends DockerKit {
+                              containerStartTimeout : FiniteDuration, useRemoteImage : Boolean = true)(implicit javaDockerFactory : DockerFactory) extends DockerKit {
 
   override val StartContainersTimeout = containerStartTimeout
   override val PullImagesTimeout = imagePullTimeout

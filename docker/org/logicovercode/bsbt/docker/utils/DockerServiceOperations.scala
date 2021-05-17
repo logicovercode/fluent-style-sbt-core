@@ -84,20 +84,24 @@ object DockerServiceOperations {
     }
   }
 
-  private def triggerService(dockerService: MicroService): Unit = {
+  private def triggerService(microService: MicroService): Unit = {
 
-    dockerService.serviceDescriptions.foreach { dockerImage =>
+    microService.serviceDescriptions.foreach { serviceDescription =>
 
-      val imageName = dockerImage.container.image
-      println(s"pulling image >$imageName<")
+      val imageName = serviceDescription.container.image
+      if(serviceDescription.useRemoteImage) {
+        println(s"pulling image >$imageName<")
 
-      import scala.sys.process._
-      val dockerPullCommand = s"docker pull $imageName"
-      println(s"$dockerPullCommand")
-      s"$dockerPullCommand" !
+        import scala.sys.process._
+        val dockerPullCommand = s"docker pull $imageName"
+        println(s"$dockerPullCommand")
+        s"$dockerPullCommand" !
+      }else{
+        println(s"using local image $imageName")
+      }
 
-      println("starting container from image : " + imageName)
-      dockerImage.startAllOrFail()
+      println("now image is pulled and container will be started for image : " + imageName)
+      serviceDescription.startAllOrFail()
     }
   }
 

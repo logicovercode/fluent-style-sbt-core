@@ -22,14 +22,12 @@ object DockerInfra {
 
     isWindowsCategoryOs(osOption) match {
       case true =>
-        println("creating windows style docker instance")
         val _ @(host, client) = DockerHostAndClientReResolver.hostAndClient()
         val dockerFactory = new DockerFactory {
           override def createExecutor(): DockerCommandExecutor = new DockerJavaExecutor(host, client)
         }
         (dockerFactory, client)
       case false =>
-        println("creating linux style docker instance")
         val docker = new Docker(DefaultDockerClientConfig.createDefaultConfigBuilder().build(), factory = new NettyDockerCmdExecFactory())
         (new DockerJavaExecutorFactory(docker), docker.client)
     }
