@@ -39,10 +39,8 @@ trait DockerSettings {
       val args = spaceDelimited("").parsed
 
       val buildImageMeta = prepareImageMeta(args, organization.value, name.value)
-      buildDockerImageWithLatestTag(buildImageMeta)
-
-      val versionTag = s"${buildImageMeta.imageName}:${version.value}"
-      tagLatestDockerImage(buildImageMeta.imageName, versionTag)
+      buildDockerImage(buildImageMeta, "latest")
+      tagDockerImage(buildImageMeta.imageName, "latest", version.value)
     },
 
     buildImageForGitHub := {
@@ -54,13 +52,12 @@ trait DockerSettings {
         case Some(user) => {
 
           val buildImageMeta = prepareImageMeta(args, organization.value, name.value)
-          buildDockerImageWithLatestTag(buildImageMeta)
 
-          val versionTag = s"${buildImageMeta.imageName}:${version.value}"
-          tagLatestDockerImage(buildImageMeta.imageName, versionTag)
+          val ghcrImageMeta = BuildImageMetaData(s"ghcr.io/${buildImageMeta.imageName}", buildImageMeta.executionDirectory,
+            buildImageMeta.dockerFile, buildImageMeta.dockerArgs)
 
-          val githubTag = s"ghcr.io/$user/${buildImageMeta.imageName}:${version.value}"
-          tagLatestDockerImage(buildImageMeta.imageName, githubTag)
+          buildDockerImage(ghcrImageMeta, "latest")
+          tagDockerImage(ghcrImageMeta.imageName, "latest", version.value)
         }
         case None => println(s"environment variable [TARGET_GITHUB_REPO] is not set")
       }

@@ -10,27 +10,24 @@ object DockerCliOperations {
     image
   }
 
-  def buildDockerImageWithLatestTag(
-                                     buildImageMetaData: BuildImageMetaData
-                                   ): Unit = {
+  def buildDockerImage(buildImageMetaData: BuildImageMetaData, tag : String): Unit = {
 
     import sys.process._
 
-
     println("now building docker image with latest tag :-")
-    println(buildImageMetaData.buildImageCommand)
-    buildImageMetaData.buildImageCommand !
+    val buildCommand = buildImageMetaData.buildImageCommand(tag)
+    println(buildCommand)
+    buildCommand !
   }
 
-  def tagLatestDockerImage(
-      imageName: String,
-      tag: String
+  def tagDockerImage(imageName : String, sourceTag : String, destinationTag: String
   ): Unit = {
     import sys.process._
 
-    val latestTag = s"$imageName:latest"
-    println(s"now tagging docker image $latestTag with tag $tag :-")
-    val tagCommand = s"docker tag ${latestTag} ${tag}"
+    val sourceImage = s"$imageName:$sourceTag"
+    val destinationImage = s"$imageName:$destinationTag"
+    println(s"now tagging docker image $sourceImage to $destinationImage :-")
+    val tagCommand = s"docker tag ${sourceImage} ${destinationImage}"
     println(tagCommand)
     tagCommand !
   }
@@ -82,7 +79,7 @@ object DockerCliOperations {
     println(s"value for args >$dockerArgs<, with buildArg >$dockerArgsWithBuildArg<")
 
     val firstIndexOfHifen = fileArgs.indexOf("-")
-    val suffix = if(firstIndexOfHifen != -1)  fileArgs.substring( firstIndexOfHifen )   else ""
+    val suffix = if (firstIndexOfHifen != -1) fileArgs.substring(firstIndexOfHifen) else ""
 
     DockerParsingResult(dirArgs, fileArgs, suffix, dockerArgsWithBuildArg)
   }
