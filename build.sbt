@@ -18,7 +18,7 @@ libraryDependencies += "com.github.pathikrit" %% "better-files" % "3.9.1"
 val testDirs = List( /*"core-spec"*/ "docker-spec")
 Test / unmanagedSourceDirectories ++= testDirs.map(dir => (Test / baseDirectory).value / dir)
 
-val projectSourceDirs = List("build-core", "build-language-support/java", "build-language-support", "build-language-support/scala", "build-scala", "build-java", "sbt-project", "plugin", "publishing", "docker", "paths", "scala-fmt", "os")
+val projectSourceDirs = List("build-core", "build-language-support/java", "build-language-support/scala", "build-scala", "build-java", "sbt-project", "plugin", "publishing", "docker", "paths", "scala-fmt", "os")
 Compile / unmanagedSourceDirectories ++= projectSourceDirs.map(dir => (Compile / baseDirectory).value / dir)
 
 organization := "org.logicovercode"

@@ -11,20 +11,18 @@ object DockerCliOperations {
   }
 
   def buildDockerImageWithLatestTag(
-      executionDir: String,
-      dockerArgs: String,
-      dockerFile: String,
-      imageName: String
-  ): Unit = {
+                                     buildImageMetaData: BuildImageMetaData
+                                   ): Unit = {
+
     import sys.process._
 
-    val buildCommand = s"docker build -t ${imageName} ${dockerArgs} -f $dockerFile $executionDir"
+
     println("now building docker image with latest tag :-")
-    println(buildCommand)
-    buildCommand !
+    println(buildImageMetaData.buildImageCommand)
+    buildImageMetaData.buildImageCommand !
   }
 
-  def tagLatestDockerImageWithVersionTag(
+  def tagLatestDockerImage(
       imageName: String,
       tag: String
   ): Unit = {
@@ -37,16 +35,16 @@ object DockerCliOperations {
     tagCommand !
   }
 
-  def publishDockerImage(tag: String): Unit = {
-    import sys.process._
+//  def publishDockerImage(tag: String): Unit = {
+//    import sys.process._
+//
+//    println(s"now publishing docker image >$tag<")
+//    val dockerPushCommand = s"docker push ${tag}"
+//    println(dockerPushCommand)
+//    dockerPushCommand !
+//  }
 
-    println(s"now publishing docker image >$tag<")
-    val dockerPushCommand = s"docker push ${tag}"
-    println(dockerPushCommand)
-    dockerPushCommand !
-  }
-
-  def parseDockerCommandArgs(args: Seq[String]): (String, String, String) = {
+  def parseDockerCommandArgs(args: Seq[String]): DockerParsingResult = {
 
     println("all args")
     args.foreach(println)
@@ -83,6 +81,9 @@ object DockerCliOperations {
     println(s"value for file >$fileArgs<")
     println(s"value for args >$dockerArgs<, with buildArg >$dockerArgsWithBuildArg<")
 
-    (dirArgs, dockerArgsWithBuildArg, fileArgs)
+    val firstIndexOfHifen = fileArgs.indexOf("-")
+    val suffix = if(firstIndexOfHifen != -1)  fileArgs.substring( firstIndexOfHifen )   else ""
+
+    DockerParsingResult(dirArgs, fileArgs, suffix, dockerArgsWithBuildArg)
   }
 }
