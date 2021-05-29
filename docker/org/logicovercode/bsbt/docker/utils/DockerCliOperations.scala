@@ -32,15 +32,6 @@ object DockerCliOperations {
     tagCommand !
   }
 
-//  def publishDockerImage(tag: String): Unit = {
-//    import sys.process._
-//
-//    println(s"now publishing docker image >$tag<")
-//    val dockerPushCommand = s"docker push ${tag}"
-//    println(dockerPushCommand)
-//    dockerPushCommand !
-//  }
-
   def parseDockerCommandArgs(args: Seq[String]): DockerParsingResult = {
 
     println("all args")

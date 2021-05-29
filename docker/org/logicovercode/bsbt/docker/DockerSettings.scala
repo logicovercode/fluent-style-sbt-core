@@ -13,7 +13,6 @@ trait DockerSettings {
   lazy val startServices = taskKey[Unit]("start dependent containers")
   lazy val buildImage = inputKey[Unit]("build docker image on local with latest tag")
   lazy val buildImageForGitHub = inputKey[Unit]("build docker image on local with latest tag and github tag")
-  //lazy val publishImageToGitHub = taskKey[Unit]("publish image to github")
 
   lazy val dockerSettings = Seq[Def.Setting[_]](
     dependentServices := Set(),
