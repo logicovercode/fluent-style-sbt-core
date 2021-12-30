@@ -3,9 +3,8 @@ package com.logicovercode.bsbt.docker.model
 import com.github.dockerjava.api.DockerClient
 import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.netty.NettyDockerCmdExecFactory
-import com.logicovercode.bsbt.docker.win.DockerHostAndClientReResolver
-import com.logicovercode.bsbt.os.OsFunctions.{currentOsOption, isWindowsCategoryOs}
-import com.logicovercode.wdocker.{Docker, DockerCommandExecutor, DockerFactory, DockerJavaExecutor, DockerJavaExecutorFactory}
+import com.logicovercode.wdocker.OsFunctions.{currentOsOption, isWindowsCategoryOs}
+import com.logicovercode.wdocker.{Docker, DockerCommandExecutor, DockerFactory, DockerHostAndClientReResolver, DockerJavaExecutor, DockerJavaExecutorFactory}
 
 trait DockerInfra{
   implicit final val dockerFactory = DockerInfra.javaDockerFactory

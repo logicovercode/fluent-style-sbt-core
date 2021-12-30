@@ -1,11 +1,10 @@
 package com.logicovercode.bsbt.docker
 
 import com.logicovercode.bsbt.docker.model.{DockerInfra, MicroService}
-import com.logicovercode.bsbt.docker.utils.{BuildImageMetaData, DockerServiceOperations}
-import com.logicovercode.bsbt.docker.model.MicroService
 import com.logicovercode.bsbt.docker.utils.DockerCliOperations._
-import com.logicovercode.bsbt.docker.utils.BuildImageMetaData
-import com.logicovercode.bsbt.os.OsFunctions.currentOsOption
+import com.logicovercode.bsbt.docker.utils.{BuildImageMetaData, DockerServiceOperations}
+import com.logicovercode.wdocker.DockerSystem
+import com.logicovercode.wdocker.OsFunctions.currentOsOption
 import sbt.Keys._
 import sbt.{Def, _}
 

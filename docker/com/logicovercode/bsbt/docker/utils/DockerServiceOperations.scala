@@ -1,10 +1,8 @@
 package com.logicovercode.bsbt.docker.utils
 
-import com.github.dockerjava.api.DockerClient
-import com.github.dockerjava.api.model.Network.Ipam
-import com.github.dockerjava.api.model.Network.Ipam.Config
-import com.logicovercode.bsbt.docker.model.MicroService
-import com.logicovercode.wdocker.DockerNetwork
+import com.logicovercode.bsbt.docker.model.{DockerInfra, MicroService}
+import com.logicovercode.wdocker.DockerSystem
+import com.logicovercode.wdocker.OsFunctions.isWindowsCategoryOs
 
 object DockerServiceOperations {
   def pid(): Long = {
@@ -34,8 +32,6 @@ object DockerServiceOperations {
       s"attempt to silent process(that is starting docker services) with pid  >$sbtProcessId< on ${osNameOption.get}"
 
     println(s"$msg")
-
-    import com.logicovercode.bsbt.os.OsFunctions.isWindowsCategoryOs
 
     isWindowsCategoryOs(osNameOption) match {
       case false => killOnUnixBaseBox(sbtProcessId)
@@ -84,12 +80,8 @@ object DockerServiceOperations {
     microService.serviceDescriptions.foreach { serviceDescription =>
       val imageName = serviceDescription.container.image
       if (serviceDescription.useRemoteImage) {
-        println(s"pulling image >$imageName<")
-
-        import scala.sys.process._
-        val dockerPullCommand = s"docker pull $imageName"
-        println(s"$dockerPullCommand")
-        s"$dockerPullCommand" !
+        println(s"pulling image >$imageName<, this might take some time ...")
+        DockerSystem.pullDockerImage(imageName)(DockerInfra.dockerClient)
       } else {
         println(s"using local image $imageName")
       }
@@ -97,28 +89,5 @@ object DockerServiceOperations {
       println("now image is pulled and container will be started for image : " + imageName)
       serviceDescription.startAllOrFail()
     }
-  }
-
-  def createNetworkIfNotExists(network: DockerNetwork, dockerClient: DockerClient): Unit = {
-
-    val baseNetworkCommand = dockerClient
-      .createNetworkCmd()
-      .withName(network.name)
-      .withDriver("bridge")
-      .withAttachable(true)
-
-    val networkCommand = network.subnet match {
-      case Some(sn) =>
-        baseNetworkCommand.withIpam(
-          new Ipam().withConfig(
-            new Config()
-              .withSubnet(sn)
-          )
-        )
-      case None => baseNetworkCommand
-    }
-
-    val networkResponse = networkCommand.exec()
-    println(s"Network ${network.name} created with id ${networkResponse.getId}\n")
   }
 }

@@ -1,12 +1,12 @@
 name := "fluent-style-sbt-core"
 
-version := "0.0.420"
+version := "0.0.421"
 
 sbtPlugin := true
 
 libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
-  "com.logicovercode" %% "docker-core" % "0.0.002",
+  "com.logicovercode" %% "docker-core" % "0.0.003",
   "org.scalatest" %% "scalatest" % "3.2.10" % Test
 )
 
@@ -15,7 +15,7 @@ Test / unmanagedSourceDirectories ++= testDirs.map(dir => (Test / baseDirectory)
 
 val projectSourceDirs = List("build-core", "build-language-support/java", "build-language-support/scala",
   "build-scala", "build-java", "sbt-project", "plugin",
-  "publishing", "paths", "scala-fmt", "os",
+  "publishing", "paths", "scala-fmt",
   "docker", "docker-whisk/core", "docker-whisk/impl-docker-java")
 Compile / unmanagedSourceDirectories ++= projectSourceDirs.map(dir => (Compile / baseDirectory).value / dir)
 
