@@ -3,7 +3,7 @@ package com.logicovercode.bsbt.docker
 import com.logicovercode.bsbt.docker.model.{DockerInfra, MicroService}
 import com.logicovercode.bsbt.docker.utils.DockerCliOperations._
 import com.logicovercode.bsbt.docker.utils.{BuildImageMetaData, DockerServiceOperations}
-import com.logicovercode.wdocker.DockerSystem
+import com.logicovercode.wdocker.{DockerProcessFunctions, DockerSystem}
 import com.logicovercode.wdocker.OsFunctions.currentOsOption
 import sbt.Keys._
 import sbt.{Def, _}
@@ -44,8 +44,8 @@ trait DockerSettings {
 
       dockerServices.par.foreach(DockerServiceOperations.startService)
 
-      val sbtProcessId = DockerServiceOperations.pid()
-      DockerServiceOperations.killDockerManager(sbtProcessId, currentOsOption)
+      val sbtProcessId = DockerProcessFunctions.pid()
+      DockerProcessFunctions.killDockerManager(sbtProcessId, currentOsOption)
     },
 
     buildImage := {
