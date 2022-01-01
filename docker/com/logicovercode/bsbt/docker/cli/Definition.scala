@@ -1,4 +1,4 @@
-package com.logicovercode.bsbt.docker.utils
+package com.logicovercode.bsbt.docker.cli
 
 case class DockerParsingResult(executionDirectory : String, dockerFile : String, suffix : String, dockerArgs : String)
 

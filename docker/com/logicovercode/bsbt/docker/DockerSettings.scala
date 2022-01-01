@@ -1,14 +1,12 @@
 package com.logicovercode.bsbt.docker
 
-import com.logicovercode.bsbt.docker.model.{DockerInfra, MicroService}
-import com.logicovercode.bsbt.docker.utils.DockerCliOperations._
-import com.logicovercode.bsbt.docker.utils.{BuildImageMetaData, DockerServiceOperations}
-import com.logicovercode.wdocker.{DockerProcessFunctions, DockerSystem}
+import com.logicovercode.bsbt.docker.cli.BuildImageMetaData
+import com.logicovercode.bsbt.docker.service.{DockerServiceOperations, MicroService}
+import com.logicovercode.bsbt.docker.cli.DockerCliOperations._
 import com.logicovercode.wdocker.OsFunctions.currentOsOption
+import com.logicovercode.wdocker.api.{DockerContext, DockerProcessFunctions}
 import sbt.Keys._
 import sbt.{Def, _}
-
-import scala.util.{Failure, Success, Try}
 
 trait DockerSettings {
 
@@ -23,26 +21,7 @@ trait DockerSettings {
     startServices := {
       val dockerServices = (dependentServices.value)
 
-      val allNetworks = (for {
-        dockerService <- dockerServices
-        containerDefinition <- dockerService.serviceDescriptions
-        network = containerDefinition.container.networkMode
-      } yield network).flatten
-
-      implicit val dockerClient = DockerInfra.dockerClient
-
-      val status = for{
-        nets <- Try(allNetworks)
-        createTries = nets.map(n => DockerSystem.createNonExistingNetwork(n))
-        createTry <- Try( createTries.map(_.get) )
-      } yield (createTry)
-
-      status match {
-        case Success(s) => println(s)
-        case Failure(ex) => ex.printStackTrace()
-      }
-
-      dockerServices.par.foreach(DockerServiceOperations.startService)
+      dockerServices.par.foreach(DockerServiceOperations.tryToStartService(_)(DockerContext.dockerClient, DockerContext.dockerFactory))
 
       val sbtProcessId = DockerProcessFunctions.pid()
       DockerProcessFunctions.killDockerManager(sbtProcessId, currentOsOption)
@@ -77,17 +56,4 @@ trait DockerSettings {
       }
     }
   )
-
-  private def prepareImageMeta(args : Seq[String], org : String, name : String) : BuildImageMetaData = {
-    val dockerParsingResult = parseDockerCommandArgs(args)
-
-    val dockerImageName = imageName(org, name + dockerParsingResult.suffix)
-
-    BuildImageMetaData(
-      dockerImageName,
-      dockerParsingResult.executionDirectory,
-      dockerParsingResult.dockerFile,
-      dockerParsingResult.dockerArgs
-    )
-  }
 }

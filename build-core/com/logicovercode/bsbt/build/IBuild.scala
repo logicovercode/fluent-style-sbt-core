@@ -1,6 +1,6 @@
 package com.logicovercode.bsbt.build
 
-import com.logicovercode.bsbt.docker.model.MicroService
+import com.logicovercode.bsbt.docker.service.MicroService
 import com.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.{Def, ModuleID}
 

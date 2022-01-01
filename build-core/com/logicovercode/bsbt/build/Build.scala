@@ -1,7 +1,7 @@
 package com.logicovercode.bsbt.build
 
 import com.logicovercode.bsbt.docker.DockerSettings
-import com.logicovercode.bsbt.docker.model.MicroService
+import com.logicovercode.bsbt.docker.service.MicroService
 import com.logicovercode.bsbt.module_id.JvmModuleID
 import sbt.Keys._
 import sbt._
@@ -90,7 +90,7 @@ trait Build[T <: Build[T]]
 
     val allAdditionalSettings = for {
       dockerService <- dockerServices
-      serviceDescription <- dockerService.serviceDescriptions
+      serviceDescription <- dockerService.sbtServiceDescriptions
       settings <- serviceDescription.serviceAdditionalSettings
     } yield settings
 
