@@ -1,7 +1,6 @@
 package com.logicovercode.bsbt.docker
 
-import com.logicovercode.bsbt.docker.utils.{DockerCliOperations, DockerParsingResult}
-import org.logicovercode.bsbt.docker.utils.DockerParsingResult
+import com.logicovercode.bsbt.docker.cli.{DockerCliOperations, DockerParsingResult}
 import org.scalatest.flatspec.AsyncFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 

@@ -1,6 +1,19 @@
-package com.logicovercode.bsbt.docker.utils
+package com.logicovercode.bsbt.docker.cli
 
 object DockerCliOperations {
+
+  def prepareImageMeta(args: Seq[String], org: String, name: String): BuildImageMetaData = {
+    val dockerParsingResult = parseDockerCommandArgs(args)
+
+    val dockerImageName = imageName(org, name + dockerParsingResult.suffix)
+
+    BuildImageMetaData(
+      dockerImageName,
+      dockerParsingResult.executionDirectory,
+      dockerParsingResult.dockerFile,
+      dockerParsingResult.dockerArgs
+    )
+  }
 
   final def imageName(organization: String, name: String): String = {
     val arr = organization.split("[.]")
@@ -10,7 +23,7 @@ object DockerCliOperations {
     image
   }
 
-  def buildDockerImage(buildImageMetaData: BuildImageMetaData, tag : String): Unit = {
+  def buildDockerImage(buildImageMetaData: BuildImageMetaData, tag: String): Unit = {
 
     import sys.process._
 
@@ -20,8 +33,7 @@ object DockerCliOperations {
     buildCommand !
   }
 
-  def tagDockerImage(imageName : String, sourceTag : String, destinationTag: String
-  ): Unit = {
+  def tagDockerImage(imageName: String, sourceTag: String, destinationTag: String): Unit = {
     import sys.process._
 
     val sourceImage = s"$imageName:$sourceTag"
