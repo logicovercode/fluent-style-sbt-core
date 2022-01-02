@@ -1,12 +1,12 @@
 name := "fluent-style-sbt-core"
 
-version := "0.0.421"
+version := "0.0.422"
 
 sbtPlugin := true
 
 libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
-  "com.logicovercode" %% "docker-core" % "0.0.003",
+  "com.logicovercode" %% "docker-core" % "0.0.004",
   "org.scalatest" %% "scalatest" % "3.2.10" % Test
 )
 
@@ -43,7 +43,7 @@ licenses += ("MIT", url("https://opensource.org/licenses/MIT"))
 
 //publishing related settings
 
-crossPaths := false
+//crossPaths := false
 publishMavenStyle := true
 
 publishTo := Some(Opts.resolver.sonatypeStaging)
