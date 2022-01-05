@@ -1,12 +1,13 @@
 name := "fluent-style-sbt-core"
 
-version := "0.0.422"
+version := "0.0.423"
 
 sbtPlugin := true
 
 libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "com.logicovercode" %% "docker-core" % "0.0.004",
+  "com.logicovercode" %% "fsbt-adts" % "0.0.001",
   "org.scalatest" %% "scalatest" % "3.2.10" % Test
 )
 
@@ -51,3 +52,4 @@ publishTo := Some(Opts.resolver.sonatypeStaging)
 //below is not yet working as expected (exploring ...)
 publishConfiguration := publishConfiguration.value.withOverwrite(true)
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
+
