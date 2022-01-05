@@ -1,6 +1,6 @@
-package com.logicovercode.bsbt.docker
+package com.logicovercode.bsbt
 
-trait DockerImplicitConversions {
+trait TypeAliases {
 
   type DockerNetwork = com.logicovercode.wdocker.DockerNetwork
   val DockerNetwork = com.logicovercode.wdocker.DockerNetwork
