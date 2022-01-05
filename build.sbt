@@ -8,8 +8,10 @@ libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
   "com.logicovercode" %% "docker-core" % "0.0.004",
   "com.logicovercode" %% "fsbt-adts" % "0.0.001",
-  "org.scalatest" %% "scalatest" % "3.2.10" % Test
+  "org.scalatest" %% "scalatest" % "3.2.10" % Test,
 )
+
+addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "6.5.0")
 
 val testDirs = List( /*"core-spec"*/ "docker-spec")
 Test / unmanagedSourceDirectories ++= testDirs.map(dir => (Test / baseDirectory).value / dir)
