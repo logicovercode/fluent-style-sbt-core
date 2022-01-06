@@ -18,7 +18,7 @@ object BuilderStyleBuild extends AutoPlugin with DockerSettings with ScalaFmtSet
     with BuildProjectExtensions
     with BuildPublishingExtensions
     with FSbtAttributesImplicitConversions
-    with SbtModuleSettings with PluginPathSettings with ScalaFmtSettings with TypeAliases
+    with SbtModuleSettings with PluginPathSettings with ScalaFmtSettings with FSbtCoreTypeAliases
 
   override lazy val projectSettings = super.projectSettings ++ dockerSettings ++ scalaFmtSettings
 }

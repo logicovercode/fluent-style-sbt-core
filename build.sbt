@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   "com.logicovercode" %% "fsbt-adts" % "0.0.001",
   "org.scalatest" %% "scalatest" % "3.2.10" % Test,
 )
-
+addDependencyTreePlugin
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 addSbtPlugin("io.github.davidmweber" % "flyway-sbt" % "6.5.0")
 
 val testDirs = List( /*"core-spec"*/ "docker-spec")
