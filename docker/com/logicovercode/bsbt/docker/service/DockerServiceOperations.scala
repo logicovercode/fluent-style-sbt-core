@@ -1,6 +1,7 @@
 package com.logicovercode.bsbt.docker.service
 
 import com.github.dockerjava.api.DockerClient
+import com.logicovercode.fsbt.commons.SbtMicroservice
 import com.logicovercode.wdocker.DockerFactory
 import com.logicovercode.wdocker.api.DockerSystem
 import com.logicovercode.wdocker.api.DockerSystem.NetworkCreationFailed
@@ -9,7 +10,7 @@ import scala.util.{Failure, Success}
 
 object DockerServiceOperations {
 
-  def tryToStartService(microService: MicroService)(implicit dockerClient: DockerClient, dockerFactory: DockerFactory): Unit = {
+  def tryToStartService(microService: SbtMicroservice)(implicit dockerClient: DockerClient, dockerFactory: DockerFactory): Unit = {
 
 //    val allContainerNetworksInSingleService = microService.serviceDescriptions.map(_.container.networkMode).flatten
 //

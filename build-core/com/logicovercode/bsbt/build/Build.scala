@@ -1,8 +1,9 @@
 package com.logicovercode.bsbt.build
 
 import com.logicovercode.bsbt.docker.DockerSettings
-import com.logicovercode.bsbt.docker.service.MicroService
 import com.logicovercode.bsbt.module_id.JvmModuleID
+import com.logicovercode.fsbt.commons.{ClusterService, DbService, SbtMicroservice}
+import io.github.davidmweber.FlywayPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
@@ -82,23 +83,38 @@ trait Build[T <: Build[T]]
     )
   }
 
-  def services(dockerServices: MicroService*): T = {
+  def services(microservices: SbtMicroservice*): T = {
     //this will remove duplicates
     val serviceSettings: Seq[Def.Setting[_]] = Seq(
-      dependentServices := dockerServices.toSet
+      dependentServices := microservices.toSet
     )
 
-    val allAdditionalSettings = for {
-      dockerService <- dockerServices
-      serviceDescription <- dockerService.sbtServiceDescriptions
-      settings <- serviceDescription.serviceAdditionalSettings
-    } yield settings
-
-    //val containerSettings = dockerServices.flatMap(_.sbtSettings())
+    val allAdditionalSettings = microservices.map( microserviceSettings ).flatten
 
     val allSettings = this.sbtSettings ++ serviceSettings ++ allAdditionalSettings
 
     moduleWithNewSettings(allSettings)
+  }
+
+  private def microserviceSettings(microservice: SbtMicroservice) : Seq[Def.Setting[_]] = {
+
+    val settings : Seq[Def.Setting[_]] = microservice match {
+      case ClusterService(_) => Seq()
+      case DbService(_, sbtFlywayConfig) =>
+        import sbtFlywayConfig._
+        Seq(
+        flywayUrl := url,
+        flywayUser := userName,
+        flywayPassword := password,
+        flywayLocations := locations,
+
+        // Necessary for initializing metadata table
+        flywayBaselineOnMigrate := baseLineOnMigrate,
+        flywayBaselineVersion := baseLineVersion
+      )
+    }
+
+    settings
   }
 
   protected def resolverSettingsSet(

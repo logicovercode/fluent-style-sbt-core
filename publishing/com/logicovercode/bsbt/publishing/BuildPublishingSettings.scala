@@ -3,16 +3,14 @@ package com.logicovercode.bsbt.publishing
 import com.logicovercode.bsbt.build.Build
 import org.apache.ivy.core.module.descriptor.License
 import sbt._
-
-import java.net.URL
+import xerial.sbt.Sonatype.ProjectHosting
 
 trait BuildPublishingSettings[T <: Build[T]] extends PublishingSettings {
-  def argsRequiredForPublishing(
-                                 projectDevelopers: List[Developer],
-                                 license: License,
-                                 homePageUrl: URL,
-                                 moduleScmInfo: ScmInfo,
-                                 mavenRepository: MavenRepository
-                               ): T
-}
+  def publish(projectDevelopers: List[Developer],
+              license: License,
+              projectHosting: ProjectHosting,
+             mavenRepository : MavenRepository): T
 
+  def publishWithoutSource(projectDevelopers: List[Developer], license: License,
+                           projectHosting: ProjectHosting, mavenRepository : MavenRepository): T
+}
