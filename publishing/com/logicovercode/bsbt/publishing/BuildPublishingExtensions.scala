@@ -3,8 +3,10 @@ package com.logicovercode.bsbt.publishing
 import com.logicovercode.bsbt.java_module.JavaBuild
 import com.logicovercode.bsbt.scala_module.ScalaBuild
 import org.apache.ivy.core.module.descriptor.License
-import sbt.Def
+import sbt.{Def, url}
 import sbt.librarymanagement.ScmInfo
+import xerial.sbt.Sonatype._
+
 
 import java.net.URL
 
@@ -12,33 +14,36 @@ import java.net.URL
 
 trait BuildPublishingExtensions {
 
-  case class GithubRepo private (
-      private val githubUser: String,
-      private val githubRepoName: String
-  ) {
-
-    def homePageUrl() = new URL(
-      s"https://github.com/$githubUser/$githubRepoName"
-    )
-    private def sourceCodeBrowserUrl =
-      s"https://github.com/$githubUser/$githubRepoName"
-    private def sourceCodeScmUrl = s"git@github.com:$githubUser/$githubRepoName"
-    def scmInfo(devConnection: Option[String] = None): ScmInfo = {
-      ScmInfo(new URL(sourceCodeBrowserUrl), sourceCodeScmUrl, devConnection)
-    }
-  }
+  def githubHosting(organizationOrIndividual: String, repositoryName: String, contactPersonName: String, contactPersonEmail: String): ProjectHosting =
+    GitHubHosting(organizationOrIndividual, repositoryName, contactPersonName, contactPersonEmail)
 
   implicit class JavaBuildPublishingSettingsExtension(javaBuildSettings: JavaBuild)
     extends BuildPublishingSettings[JavaBuild] {
 
-    override def argsRequiredForPublishing(projectDevelopers: List[sbt.Developer],
+    override def publishTo(projectDevelopers: List[sbt.Developer],
                                            license: License, homePageUrl: URL,
                                            moduleScmInfo: sbt.ScmInfo,
                                            mavenRepository: sbt.MavenRepository): JavaBuild = {
       JavaBuild(
         javaBuildSettings.sbtSettings
         ++
-          argsRequiredForPublishingSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
+          publishToSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
+      )
+    }
+
+    override def publishToSonatype(projectDevelopers: List[sbt.Developer], license: License, projectHosting: ProjectHosting): JavaBuild = {
+      JavaBuild(
+        javaBuildSettings.sbtSettings
+          ++
+          publishToSonatypeSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo)
+      )
+    }
+
+    override def publishToSonatypeWithoutSource(projectDevelopers: List[sbt.Developer], license: License, projectHosting: ProjectHosting): JavaBuild = {
+      JavaBuild(
+        javaBuildSettings.sbtSettings
+          ++
+          publishToSonatypeWithoutSourceSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo)
       )
     }
   }
@@ -46,14 +51,30 @@ trait BuildPublishingExtensions {
   implicit class ScalaBuildPublishingSettingsExtension(scalaBuildSettings: ScalaBuild)
     extends BuildPublishingSettings[ScalaBuild] {
 
-    override def argsRequiredForPublishing(projectDevelopers: List[sbt.Developer],
+    override def publishTo(projectDevelopers: List[sbt.Developer],
                                            license: License, homePageUrl: URL,
                                            moduleScmInfo: sbt.ScmInfo,
                                            mavenRepository: sbt.MavenRepository): ScalaBuild = {
       ScalaBuild(
         scalaBuildSettings.sbtSettings
           ++
-          argsRequiredForPublishingSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
+          publishToSettings(projectDevelopers, license, homePageUrl, moduleScmInfo, mavenRepository)
+      )
+    }
+
+    override def publishToSonatype(projectDevelopers: List[sbt.Developer], license: License, projectHosting: ProjectHosting): ScalaBuild = {
+      ScalaBuild(
+        scalaBuildSettings.sbtSettings
+          ++
+          publishToSonatypeSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo)
+      )
+    }
+
+    override def publishToSonatypeWithoutSource(projectDevelopers: List[sbt.Developer], license: License, projectHosting: ProjectHosting): ScalaBuild = {
+      ScalaBuild(
+        scalaBuildSettings.sbtSettings
+          ++
+          publishToSonatypeWithoutSourceSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo)
       )
     }
   }
