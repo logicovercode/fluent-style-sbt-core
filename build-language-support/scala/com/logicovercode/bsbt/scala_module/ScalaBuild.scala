@@ -1,10 +1,8 @@
 package com.logicovercode.bsbt.scala_module
 
 import com.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild}
-import com.logicovercode.bsbt.java_module.JavaBuild
-import com.logicovercode.bsbt.build.BuildInitialSettings
 import sbt.Def
-import sbt.Keys.{autoScalaLibrary, crossPaths, crossScalaVersions, publishMavenStyle, scalaVersion}
+import sbt.Keys.{crossScalaVersions, scalaVersion}
 
 trait IScalaBuild[T <: Build[T]] extends IBuild[T]{
   def scalaVersions(scalaVersionToUse : String, buildCrossScalaVersions : Seq[String]): T

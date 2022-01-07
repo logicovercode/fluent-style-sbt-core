@@ -1,12 +1,27 @@
 package com.logicovercode.bsbt
 
+import better.files.File
+import com.logicovercode.bsbt.sbt_module.SbtProject
+import com.logicovercode.wdocker.OsFunctions.isWindowsCategoryOs
 import org.apache.ivy.core.module.descriptor.License
 import sbt._
 
 trait FSbtCoreTypeAliases {
 
+  val scala_2_13_MaxVersion = "2.13.7"
+  val scala_2_12_MaxVersion = "2.12.15"
+
   type DockerNetwork = com.logicovercode.wdocker.DockerNetwork
   val DockerNetwork = com.logicovercode.wdocker.DockerNetwork
+
+  val SbtModule = SbtProject
+
+  val HOME = isWindowsCategoryOs() match {
+    case true => File( sys.env("USERPROFILE") )
+    case false    => File( sys.env("HOME") )
+  }
+
+  val PARENT_DIRECTORY = File("..")
 
   def fsbt_adts() : ModuleID = {
     "com.logicovercode" %% "fsbt-adts" % "0.0.001"
