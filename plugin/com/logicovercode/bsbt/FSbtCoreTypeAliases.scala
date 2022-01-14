@@ -8,9 +8,6 @@ import sbt._
 
 trait FSbtCoreTypeAliases {
 
-  val scala_2_13_MaxVersion = "2.13.7"
-  val scala_2_12_MaxVersion = "2.12.15"
-
   type DockerNetwork = com.logicovercode.wdocker.DockerNetwork
   val DockerNetwork = com.logicovercode.wdocker.DockerNetwork
 
