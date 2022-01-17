@@ -56,6 +56,10 @@ scmInfo := Some(
 )
 //scm info ends here
 
+Compile / compile / javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+Compile / compile / scalacOptions ++= Seq("-release", "8", "-target:jvm-1.8")
+
+
 //publishing related settings starts here
 publishTo := Some(Opts.resolver.sonatypeStaging)
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)

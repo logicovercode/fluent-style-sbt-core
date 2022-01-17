@@ -1,13 +1,34 @@
 package com.logicovercode.bsbt.java_module
 
-import com.logicovercode.bsbt.build.{Build, BuildInitialSettings}
-import com.logicovercode.bsbt.build.BuildInitialSettings
-import sbt.Keys._
+import com.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild}
+import sbt.Keys.{scalaVersion, _}
 import sbt._
 
-case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[JavaBuild] {
+trait IJavaBuild[T <: Build[T]] extends IBuild[T]{
+  def scalaVersionInTestScope(scalaVersion : String): T
+}
+
+case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[JavaBuild]  with IJavaBuild[JavaBuild]{
 
   override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): JavaBuild = JavaBuild(allSettings)
+
+  override def javaCompatibility(source: String, target: String): JavaBuild = {
+    val javacOptionSettings : Set[Def.Setting[_]] = Set(
+      Compile / compile / javacOptions ++= Seq("-source", source, "-target", target)
+    )
+
+    new JavaBuild(this.sbtSettings ++ javacOptionSettings)
+  }
+
+  override def scalaVersionInTestScope(version: String): JavaBuild = {
+
+    val testScopeScalaVersionSettings : Set[Def.Setting[_]] = Set(
+      scalaVersion := version,
+      libraryDependencies += "org.scala-lang" % "scala-library" % version % Test
+    )
+
+    new JavaBuild(this.sbtSettings ++ testScopeScalaVersionSettings)
+  }
 }
 
 object JavaBuild {
@@ -15,7 +36,6 @@ object JavaBuild {
   def apply(projectOrganization: String, projectArtifact: String, mavenVersion: String): JavaBuild = {
 
     val additionalJavaBuildSettings : Set[Def.Setting[_]] = Set(
-      publishMavenStyle := true,
       crossPaths := false,
       autoScalaLibrary := false
     )
