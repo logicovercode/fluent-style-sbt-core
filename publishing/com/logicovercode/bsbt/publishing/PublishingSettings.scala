@@ -4,6 +4,7 @@ import org.apache.ivy.core.module.descriptor.License
 import sbt.Keys._
 import sbt.librarymanagement.{Developer, MavenRepository, ScmInfo}
 import sbt.{Compile, Def}
+import xerial.sbt.Sonatype.autoImport.{sonatypeCredentialHost, sonatypeRepository}
 
 import java.net.URL
 
@@ -35,6 +36,7 @@ trait PublishingSettings {
       license: License,
       homePageUrl: URL,
       moduleScmInfo: ScmInfo,
+      useNewSonatypeHost : Boolean,
       mavenRepository: MavenRepository
   ): Set[Def.Setting[_]] = {
 
@@ -48,7 +50,21 @@ trait PublishingSettings {
       publishTo := Some(mavenRepository)
     )
 
-    _settings.toSet
+    val sonatypeHostSettings : Set[Def.Setting[_]] = if(useNewSonatypeHost){
+      val credentialsHost = "s01.oss.sonatype.org"
+      val repositoryHost = "https://s01.oss.sonatype.org/service/local"
+      println(s"using sonatypeCredentialHost host : >$credentialsHost<")
+      println(s"using sonatypeRepository host : >$repositoryHost<")
+      Set(
+        sonatypeCredentialHost := credentialsHost,
+        sonatypeRepository := repositoryHost
+      )
+    }else{
+      println("using default configured host : >oss.sonatype.org<")
+      Set()
+    }
+
+    _settings ++ sonatypeHostSettings
   }
 
   final def publishToSonatypeWithoutSourceSettings(
@@ -56,6 +72,7 @@ trait PublishingSettings {
       license: License,
       homePageUrl: URL,
       moduleScmInfo: ScmInfo,
+      useNewSonatypeHost : Boolean,
       mavenRepository: MavenRepository
   ): Set[Def.Setting[_]] = {
 
@@ -70,6 +87,15 @@ trait PublishingSettings {
       Compile / packageSrc / publishArtifact := false
     )
 
-    _settings.toSet
+    val sonatypeHostSettings : Set[Def.Setting[_]] = if(useNewSonatypeHost){
+      val host = "s01.oss.sonatype.org"
+      println(s"using new sonatype host : >$host<")
+      Set(sonatypeCredentialHost := host)
+    }else{
+      println("using default configured host : >oss.sonatype.org<")
+      Set()
+    }
+
+    _settings ++ sonatypeHostSettings
   }
 }

@@ -18,21 +18,21 @@ trait BuildPublishingExtensions {
     extends BuildPublishingSettings[JavaBuild] {
 
     override def publish(projectDevelopers: List[sbt.Developer], license: License,
-                         projectHosting: ProjectHosting, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): JavaBuild = {
+                         projectHosting: ProjectHosting, useNewHost : Boolean = true, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): JavaBuild = {
       JavaBuild(
         javaBuildSettings.sbtSettings
           ++
-          publishToSonatypeSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo, mavenRepository)
+          publishToSonatypeSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo, useNewHost, mavenRepository)
       )
     }
 
     override def publishWithoutSource(projectDevelopers: List[sbt.Developer], license: License,
-                                                projectHosting: ProjectHosting, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): JavaBuild = {
+                                                projectHosting: ProjectHosting, useNewHost : Boolean = true, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): JavaBuild = {
       JavaBuild(
         javaBuildSettings.sbtSettings
           ++
           publishToSonatypeWithoutSourceSettings(projectDevelopers, license, url(projectHosting.homepage),
-            projectHosting.scmInfo, mavenRepository)
+            projectHosting.scmInfo, useNewHost, mavenRepository)
       )
     }
 
@@ -44,21 +44,21 @@ trait BuildPublishingExtensions {
 
 
     override def publish(projectDevelopers: List[sbt.Developer], license: License,
-                         projectHosting: ProjectHosting, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): ScalaBuild = {
+                         projectHosting: ProjectHosting, useNewHost : Boolean = true, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): ScalaBuild = {
       ScalaBuild(
         scalaBuildSettings.sbtSettings
           ++
-          publishToSonatypeSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo, mavenRepository)
+          publishToSonatypeSettings(projectDevelopers, license, url(projectHosting.homepage), projectHosting.scmInfo, useNewHost, mavenRepository)
       )
     }
 
     override def publishWithoutSource(projectDevelopers: List[sbt.Developer], license: License,
-                                      projectHosting: ProjectHosting, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): ScalaBuild = {
+                                      projectHosting: ProjectHosting, useNewHost : Boolean = true, mavenRepository: MavenRepository = Opts.resolver.sonatypeStaging): ScalaBuild = {
       ScalaBuild(
         scalaBuildSettings.sbtSettings
           ++
           publishToSonatypeWithoutSourceSettings(projectDevelopers, license, url(projectHosting.homepage),
-            projectHosting.scmInfo, mavenRepository)
+            projectHosting.scmInfo, useNewHost, mavenRepository)
       )
     }
   }

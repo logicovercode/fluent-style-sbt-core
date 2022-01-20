@@ -9,8 +9,8 @@ trait BuildPublishingSettings[T <: Build[T]] extends PublishingSettings {
   def publish(projectDevelopers: List[Developer],
               license: License,
               projectHosting: ProjectHosting,
-             mavenRepository : MavenRepository): T
+              useNewHost : Boolean = true, mavenRepository : MavenRepository): T
 
   def publishWithoutSource(projectDevelopers: List[Developer], license: License,
-                           projectHosting: ProjectHosting, mavenRepository : MavenRepository): T
+                           projectHosting: ProjectHosting, useNewHost : Boolean = true, mavenRepository : MavenRepository): T
 }
