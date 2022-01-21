@@ -1,7 +1,7 @@
 //basic info starts here
 name := "fluent-style-sbt-core"
 
-version := "0.0.423"
+version := "0.0.424"
 
 organization := "com.logicovercode"
 
@@ -55,6 +55,10 @@ scmInfo := Some(
   )
 )
 //scm info ends here
+
+Compile / compile / javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+Compile / compile / scalacOptions ++= Seq("-release", "8", "-target:jvm-1.8")
+
 
 //publishing related settings starts here
 publishTo := Some(Opts.resolver.sonatypeStaging)

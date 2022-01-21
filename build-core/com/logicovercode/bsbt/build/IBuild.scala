@@ -25,4 +25,6 @@ trait IBuild[T <: Build[T]] extends ISettings{
   def testDependencies(projectDependencies: Seq[JvmModuleID]*): T
 
   def services(dockerServices: SbtMicroservice*): T
+
+  def javaCompatibility(source : String, target : String) : T
 }
