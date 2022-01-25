@@ -2,10 +2,10 @@ package com.logicovercode.bsbt.docker.cli
 
 object DockerCliOperations {
 
-  def prepareImageMeta(args: Seq[String], org: String, name: String): BuildImageMetaData = {
+  def prepareImageMeta(args: Seq[String], org: String, artifact: String): BuildImageMetaData = {
     val dockerParsingResult = parseDockerCommandArgs(args)
 
-    val dockerImageName = imageName(org, name + dockerParsingResult.suffix)
+    val dockerImageName = imageName(org, artifact + dockerParsingResult.suffix)
 
     BuildImageMetaData(
       dockerImageName,
@@ -27,7 +27,7 @@ object DockerCliOperations {
 
     import sys.process._
 
-    println("now building docker image with latest tag :-")
+    println(s"now building docker image with latest tag >$tag<")
     val buildCommand = buildImageMetaData.buildImageCommand(tag)
     println(buildCommand)
     buildCommand !
@@ -82,8 +82,9 @@ object DockerCliOperations {
     println(s"value for args >$dockerArgs<, with buildArg >$dockerArgsWithBuildArg<")
 
     val firstIndexOfHifen = fileArgs.indexOf("-")
-    val suffix = if (firstIndexOfHifen != -1) fileArgs.substring(firstIndexOfHifen) else ""
-
+    val suffix = if (firstIndexOfHifen != -1) fileArgs.substring(firstIndexOfHifen + 1) else ""
+    println(s"value for suffix >$suffix<")
+    println(s"value for dockerArgsWithBuildArg >$dockerArgsWithBuildArg<")
     DockerParsingResult(dirArgs, fileArgs, suffix, dockerArgsWithBuildArg)
   }
 }

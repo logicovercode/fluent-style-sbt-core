@@ -1,7 +1,7 @@
 //basic info starts here
 name := "fluent-style-sbt-core"
 
-version := "0.0.424"
+version := "0.0.425"
 
 organization := "com.logicovercode"
 
