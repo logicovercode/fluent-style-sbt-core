@@ -3,7 +3,7 @@ package com.logicovercode.bsbt.docker
 import com.logicovercode.bsbt.docker.cli.BuildImageMetaData
 import com.logicovercode.bsbt.docker.cli.DockerCliOperations._
 import com.logicovercode.bsbt.docker.service.DockerServiceOperations
-import com.logicovercode.fsbt.commons.SbtMicroservice
+import com.logicovercode.fsbt.commons.SbtService
 import com.logicovercode.wdocker.OsFunctions.currentOsOption
 import com.logicovercode.wdocker.api.{DockerContext, DockerProcessFunctions}
 import sbt.Keys._
@@ -11,7 +11,7 @@ import sbt.{Def, _}
 
 trait DockerSettings {
 
-  lazy val dependentServices = settingKey[Set[SbtMicroservice]]("set of dependent docker services")
+  lazy val dependentServices = settingKey[Set[SbtService]]("set of dependent docker services")
   lazy val startServices = taskKey[Unit]("start dependent containers")
   lazy val buildImage = inputKey[Unit]("build docker image on local with latest tag")
   lazy val buildImageForGitHub = inputKey[Unit]("build docker image on local with latest tag and github tag")

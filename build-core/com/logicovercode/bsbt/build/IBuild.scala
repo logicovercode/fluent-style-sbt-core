@@ -1,7 +1,7 @@
 package com.logicovercode.bsbt.build
 
 import com.logicovercode.bsbt.module_id.JvmModuleID
-import com.logicovercode.fsbt.commons.SbtMicroservice
+import com.logicovercode.fsbt.commons.SbtService
 import sbt.{Def, ModuleID}
 
 trait ISettings{
@@ -24,7 +24,7 @@ trait IBuild[T <: Build[T]] extends ISettings{
 
   def testDependencies(projectDependencies: Seq[JvmModuleID]*): T
 
-  def services(dockerServices: SbtMicroservice*): T
+  def services(dockerServices: SbtService*): T
 
   def javaCompatibility(source : String, target : String) : T
 }
