@@ -1,6 +1,6 @@
 package com.logicovercode.bsbt
 
-import com.logicovercode.bsbt.docker.DockerSettings
+import com.logicovercode.bsbt.docker.InternalDockerSettings
 import com.logicovercode.bsbt.fsbt_attributes.FSbtAttributesImplicitConversions
 import com.logicovercode.bsbt.module_id.ModuleIDImplicitConversions
 import com.logicovercode.bsbt.project.BuildProjectExtensions
@@ -10,7 +10,7 @@ import sbt.AutoPlugin
 
 /** Created by mogli on 4/23/2017.
   */
-object BuilderStyleBuild extends AutoPlugin with DockerSettings with ScalaFmtSettings {
+object BuilderStyleBuild extends AutoPlugin with InternalDockerSettings with ScalaFmtSettings {
 
   object autoImport extends ModuleIDImplicitConversions
     with BuildProjectExtensions

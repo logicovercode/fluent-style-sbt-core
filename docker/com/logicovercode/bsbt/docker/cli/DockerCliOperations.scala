@@ -2,27 +2,6 @@ package com.logicovercode.bsbt.docker.cli
 
 object DockerCliOperations {
 
-  def prepareImageMeta(args: Seq[String], org: String, artifact: String): BuildImageMetaData = {
-    val dockerParsingResult = parseDockerCommandArgs(args)
-
-    val dockerImageName = imageName(org, artifact + dockerParsingResult.suffix)
-
-    BuildImageMetaData(
-      dockerImageName,
-      dockerParsingResult.executionDirectory,
-      dockerParsingResult.dockerFile,
-      dockerParsingResult.dockerArgs
-    )
-  }
-
-  final def imageName(organization: String, name: String): String = {
-    val arr = organization.split("[.]")
-    println(arr.mkString("::"))
-    val org = if (arr.length > 1) arr(1) else organization
-    val image = s"$org/$name"
-    image
-  }
-
   def buildDockerImage(buildImageMetaData: BuildImageMetaData, tag: String): Unit = {
 
     import sys.process._
@@ -44,7 +23,28 @@ object DockerCliOperations {
     tagCommand !
   }
 
-  def parseDockerCommandArgs(args: Seq[String]): DockerParsingResult = {
+  def prepareImageMeta(args: Seq[String], org: String, artifact: String): BuildImageMetaData = {
+    val dockerParsingResult = parseDockerCommandArgs(args)
+
+    val dockerImageName = imageName(org, artifact + dockerParsingResult.suffix)
+
+    BuildImageMetaData(
+      dockerImageName,
+      dockerParsingResult.executionDirectory,
+      dockerParsingResult.dockerFile,
+      dockerParsingResult.dockerArgs
+    )
+  }
+
+  private def imageName(organization: String, name: String): String = {
+    val arr = organization.split("[.]")
+    println(arr.mkString("::"))
+    val org = if (arr.length > 1) arr(1) else organization
+    val image = s"$org/$name"
+    image
+  }
+
+  private def parseDockerCommandArgs(args: Seq[String]): DockerParsingResult = {
 
     println("all args")
     args.foreach(println)

@@ -9,12 +9,18 @@ import com.logicovercode.wdocker.api.{DockerContext, DockerProcessFunctions}
 import sbt.Keys._
 import sbt.{Def, _}
 
-trait DockerSettings {
+trait PublicDockerSettings{
+  lazy val ecrKeyForAws = settingKey[String]("ecr key for aws")
+}
+
+trait InternalDockerSettings extends PublicDockerSettings {
 
   lazy val dependentServices = settingKey[Set[SbtService]]("set of dependent docker services")
   lazy val startServices = taskKey[Unit]("start dependent containers")
   lazy val buildImage = inputKey[Unit]("build docker image on local with latest tag")
   lazy val buildImageForGitHub = inputKey[Unit]("build docker image on local with latest tag and github tag")
+
+  lazy val buildImageForAws = inputKey[Unit]("build docker image on local with latest tag and aws tag. ecr key should be set to use this task")
 
   lazy val dockerSettings = Seq[Def.Setting[_]](
     dependentServices := Set(),
@@ -41,20 +47,35 @@ trait DockerSettings {
       import complete.DefaultParsers._
       val args = spaceDelimited("").parsed
 
-      val gitUser = sys.env.get("TARGET_GITHUB_REPO")
-      gitUser match {
-        case Some(user) => {
+      val buildImageMeta = prepareImageMeta(args, organization.value, name.value)
+
+      val ghcrImageMeta = BuildImageMetaData(s"ghcr.io/${buildImageMeta.imageName}", buildImageMeta.executionDirectory,
+        buildImageMeta.dockerFile, buildImageMeta.dockerArgs)
+
+      buildDockerImage(ghcrImageMeta, "latest")
+      tagDockerImage(ghcrImageMeta.imageName, "latest", version.value)
+    },
+
+    ecrKeyForAws := "",
+
+    buildImageForAws := {
+      import complete.DefaultParsers._
+      val ecrKeyString = ecrKeyForAws.value
+      Option(ecrKeyString).filter(_.trim.nonEmpty) match {
+        case Some(ecrKey) =>
+          val args = spaceDelimited("").parsed
 
           val buildImageMeta = prepareImageMeta(args, organization.value, name.value)
 
-          val ghcrImageMeta = BuildImageMetaData(s"ghcr.io/${buildImageMeta.imageName}", buildImageMeta.executionDirectory,
+          val ecrImageMeta = BuildImageMetaData(s"$ecrKey/${name.value}", buildImageMeta.executionDirectory,
             buildImageMeta.dockerFile, buildImageMeta.dockerArgs)
 
-          buildDockerImage(ghcrImageMeta, "latest")
-          tagDockerImage(ghcrImageMeta.imageName, "latest", version.value)
-        }
-        case None => println(s"environment variable [TARGET_GITHUB_REPO] is not set")
+          buildDockerImage(ecrImageMeta, "latest")
+          tagDockerImage(ecrImageMeta.imageName, "latest", version.value)
+
+        case None => println("ecrKeyForAws should be defined to build image for aws ecr")
       }
+
     }
   )
 }

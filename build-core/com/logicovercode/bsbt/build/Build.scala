@@ -1,6 +1,6 @@
 package com.logicovercode.bsbt.build
 
-import com.logicovercode.bsbt.docker.DockerSettings
+import com.logicovercode.bsbt.docker.InternalDockerSettings
 import com.logicovercode.bsbt.module_id.JvmModuleID
 import com.logicovercode.fsbt.commons.{DbService, MicroService, SbtService}
 import io.github.davidmweber.FlywayPlugin.autoImport._
@@ -10,7 +10,7 @@ import sbt._
 trait Build[T <: Build[T]]
     extends IBuild[T]
     //with BuildFactory[T]
-    with DockerSettings {
+    with InternalDockerSettings {
 
   val sbtSettings: Set[Def.Setting[_]]
 
