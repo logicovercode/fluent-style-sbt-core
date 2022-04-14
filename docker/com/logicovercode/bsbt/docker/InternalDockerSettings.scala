@@ -67,7 +67,9 @@ trait InternalDockerSettings extends PublicDockerSettings {
 
           val buildImageMeta = prepareImageMeta(args, organization.value, name.value)
 
-          val ecrImageMeta = BuildImageMetaData(s"$ecrKey/${name.value}", buildImageMeta.executionDirectory,
+          val effectiveName = buildImageMeta.imageName.split("/").last
+
+          val ecrImageMeta = BuildImageMetaData(s"$ecrKey/$effectiveName", buildImageMeta.executionDirectory,
             buildImageMeta.dockerFile, buildImageMeta.dockerArgs)
 
           buildDockerImage(ecrImageMeta, "latest")
