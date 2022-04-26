@@ -1,6 +1,6 @@
 package com.logicovercode.bsbt.scala_module
 
-import com.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild}
+import com.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild, OutputVersion}
 import sbt.Keys._
 import sbt._
 
@@ -18,6 +18,8 @@ case class ScalaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Bui
     //val crossPathsSettings = if(crossVersions.size > 0)   Set(crossPaths := true)   else  Set(crossPaths := false)
     ScalaBuild(this.sbtSettings ++ scalaVersionSettings ++ crossScalaVersionSettings)
   }
+
+  override def javaCompatibility(outputVersion: OutputVersion): ScalaBuild = javaCompatibility(outputVersion.jSource(), outputVersion.sTarget())
 
   override def javaCompatibility(source: String, target: String): ScalaBuild = {
 

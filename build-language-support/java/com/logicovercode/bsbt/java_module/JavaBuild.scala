@@ -1,7 +1,7 @@
 package com.logicovercode.bsbt.java_module
 
-import com.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild}
-import sbt.Keys.{scalaVersion, _}
+import com.logicovercode.bsbt.build.{Build, BuildInitialSettings, IBuild, OutputVersion}
+import sbt.Keys._
 import sbt._
 
 trait IJavaBuild[T <: Build[T]] extends IBuild[T]{
@@ -11,6 +11,8 @@ trait IJavaBuild[T <: Build[T]] extends IBuild[T]{
 case class JavaBuild(override val sbtSettings: Set[Def.Setting[_]]) extends Build[JavaBuild]  with IJavaBuild[JavaBuild]{
 
   override def moduleWithNewSettings(allSettings: Set[Def.Setting[_]]): JavaBuild = JavaBuild(allSettings)
+
+  override def javaCompatibility(outputVersion: OutputVersion): JavaBuild = javaCompatibility(outputVersion.jSource(), outputVersion.jTarget())
 
   override def javaCompatibility(source: String, target: String): JavaBuild = {
     val javacOptionSettings : Set[Def.Setting[_]] = Set(
