@@ -2,32 +2,11 @@ package com.logicovercode.bsbt.docker.cli
 
 object DockerCliOperations {
 
-  def prepareImageMeta(args: Seq[String], org: String, name: String): BuildImageMetaData = {
-    val dockerParsingResult = parseDockerCommandArgs(args)
-
-    val dockerImageName = imageName(org, name + dockerParsingResult.suffix)
-
-    BuildImageMetaData(
-      dockerImageName,
-      dockerParsingResult.executionDirectory,
-      dockerParsingResult.dockerFile,
-      dockerParsingResult.dockerArgs
-    )
-  }
-
-  final def imageName(organization: String, name: String): String = {
-    val arr = organization.split("[.]")
-    println(arr.mkString("::"))
-    val org = if (arr.length > 1) arr(1) else organization
-    val image = s"$org/$name"
-    image
-  }
-
   def buildDockerImage(buildImageMetaData: BuildImageMetaData, tag: String): Unit = {
 
     import sys.process._
 
-    println("now building docker image with latest tag :-")
+    println(s"now building docker image with latest tag >$tag<")
     val buildCommand = buildImageMetaData.buildImageCommand(tag)
     println(buildCommand)
     buildCommand !
@@ -44,7 +23,28 @@ object DockerCliOperations {
     tagCommand !
   }
 
-  def parseDockerCommandArgs(args: Seq[String]): DockerParsingResult = {
+  def prepareImageMeta(args: Seq[String], org: String, artifact: String): BuildImageMetaData = {
+    val dockerParsingResult = parseDockerCommandArgs(args)
+
+    val dockerImageName = imageName(org, artifact + dockerParsingResult.suffix)
+
+    BuildImageMetaData(
+      dockerImageName,
+      dockerParsingResult.executionDirectory,
+      dockerParsingResult.dockerFile,
+      dockerParsingResult.dockerArgs
+    )
+  }
+
+  private def imageName(organization: String, name: String): String = {
+    val arr = organization.split("[.]")
+    println(arr.mkString("::"))
+    val org = if (arr.length > 1) arr(1) else organization
+    val image = s"$org/$name"
+    image
+  }
+
+  private def parseDockerCommandArgs(args: Seq[String]): DockerParsingResult = {
 
     println("all args")
     args.foreach(println)
@@ -82,8 +82,9 @@ object DockerCliOperations {
     println(s"value for args >$dockerArgs<, with buildArg >$dockerArgsWithBuildArg<")
 
     val firstIndexOfHifen = fileArgs.indexOf("-")
-    val suffix = if (firstIndexOfHifen != -1) fileArgs.substring(firstIndexOfHifen) else ""
-
+    val suffix = if (firstIndexOfHifen != -1) fileArgs.substring(firstIndexOfHifen + 1) else ""
+    println(s"value for suffix >$suffix<")
+    println(s"value for dockerArgsWithBuildArg >$dockerArgsWithBuildArg<")
     DockerParsingResult(dirArgs, fileArgs, suffix, dockerArgsWithBuildArg)
   }
 }

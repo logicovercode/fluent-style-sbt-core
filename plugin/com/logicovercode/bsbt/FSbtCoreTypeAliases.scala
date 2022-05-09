@@ -19,6 +19,9 @@ trait FSbtCoreTypeAliases {
   }
 
   val PARENT_DIRECTORY = File("..")
+  val PARENT_DIRECTORY_PATH = PARENT_DIRECTORY.toJava.getAbsolutePath
+  val CURRENT_DIRECTORY = File(".")
+  val CURRENT_DIRECTORY_PATH = CURRENT_DIRECTORY.toJava.getAbsolutePath
 
   val Apache_2_0_License = new License("Apache-2.0", "http://www.apache.org/licenses/LICENSE-2.0")
   val MIT_License = new License("MIT", "https://opensource.org/licenses/MIT")

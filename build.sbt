@@ -1,7 +1,7 @@
 //basic info starts here
 name := "fluent-style-sbt-core"
 
-version := "0.0.424"
+version := "0.0.425"
 
 organization := "com.logicovercode"
 
@@ -15,8 +15,8 @@ licenses += ("MIT", url("https://opensource.org/licenses/MIT"))
 //dependencies info starts here
 libraryDependencies ++= Seq(
   "com.github.pathikrit" %% "better-files" % "3.9.1",
-  "com.logicovercode" %% "docker-core" % "0.0.004",
-  "com.logicovercode" %% "fsbt-adts" % "0.0.001",
+  "com.logicovercode" %% "docker-core" % "0.0.005",
+  "com.logicovercode" %% "fsbt-adts" % "0.0.002",
   "org.scalatest" %% "scalatest" % "3.2.10" % Test,
 )
 addDependencyTreePlugin
