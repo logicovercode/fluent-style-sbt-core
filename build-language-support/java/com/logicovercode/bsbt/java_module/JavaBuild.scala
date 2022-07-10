@@ -45,4 +45,15 @@ object JavaBuild {
     val initialSettings = BuildInitialSettings.initialSettings(projectOrganization, projectArtifact, mavenVersion)
     new JavaBuild(initialSettings ++ additionalJavaBuildSettings)
   }
+
+  def apply(projectOrganization: String, mavenVersion: String): JavaBuild = {
+
+    val additionalJavaBuildSettings : Set[Def.Setting[_]] = Set(
+      crossPaths := false,
+      autoScalaLibrary := false
+    )
+
+    val initialSettings = BuildInitialSettings.initialSettings(projectOrganization, mavenVersion)
+    new JavaBuild(initialSettings ++ additionalJavaBuildSettings)
+  }
 }

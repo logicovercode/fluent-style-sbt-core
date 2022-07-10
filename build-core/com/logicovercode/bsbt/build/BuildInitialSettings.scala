@@ -14,10 +14,20 @@ object BuildInitialSettings {
              mavenVersion: String
            ): Set[Def.Setting[_]] = {
 
+    val defaultSettings: Set[Def.Setting[_]] = Set(
+      name := projectArtifact
+    )
+
+    defaultSettings ++ initialSettings(projectOrganization, mavenVersion)
+  }
+
+  def initialSettings(projectOrganization: String,
+                      mavenVersion: String
+                     ): Set[Def.Setting[_]] = {
+
     val sbtOfflineMode = Try(sys.env("SBT_OFFLINE_MODE").toBoolean).getOrElse(false)
 
     val defaultSettings: Set[Def.Setting[_]] = Set(
-      name := projectArtifact,
       version := mavenVersion,
       organization := projectOrganization,
       offline := sbtOfflineMode,

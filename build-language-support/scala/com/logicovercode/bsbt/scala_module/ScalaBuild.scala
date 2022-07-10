@@ -58,4 +58,10 @@ object ScalaBuild {
     val initialSettings = BuildInitialSettings.initialSettings(projectOrganization, projectArtifact, mavenVersion)
     new ScalaBuild(initialSettings)
   }
+
+  def apply(projectOrganization: String, mavenVersion: String): ScalaBuild = {
+
+    val initialSettings = BuildInitialSettings.initialSettings(projectOrganization, mavenVersion)
+    new ScalaBuild(initialSettings)
+  }
 }

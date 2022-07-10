@@ -131,6 +131,10 @@ trait Build[T <: Build[T]]
     Set(libraryDependencies ++= dependencies.toSeq)
   }
 
+  final def addSettings(buildSettings : Set[Def.Setting[_]]) = {
+    moduleWithNewSettings( this.sbtSettings ++ buildSettings )
+  }
+
   def settings: Seq[Def.Setting[_]] = {
     this.sbtSettings.toSeq
   }
